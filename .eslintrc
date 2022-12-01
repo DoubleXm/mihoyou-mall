@@ -1,0 +1,11 @@
+{
+  "env": {
+    "node": true,
+    "browser": true
+  },
+  "extends": [
+    "@nuxtjs/eslint-config-typescript",
+    "@antfu"
+  ],
+  "rules": {}
+}
