@@ -1,0 +1,76 @@
+@forward "element-plus/theme-chalk/src/common/var.scss" with (
+  $colors: (
+    "primary": (
+      "base": #ff6d6d ,
+    ),
+  ),
+);
+@use "../variables.css";
+
+// el-menu popper 通用样式定制
+div[id*="el-popper-container"] {
+  .el-popper {
+    inset: 66px auto auto 161.5px !important;
+    border: 1px solid var(--el-border-color-extra-light);
+
+    .el-menu--popup-container {
+      border-bottom: 0;
+    }
+
+    .el-menu {
+      min-width: 100px;
+      box-shadow: none;
+
+      .el-menu-item {
+        padding: 0 10px;
+        margin: 0 10px;
+        border-radius: 4px;
+
+        &.is-active {
+          background-color: var(--el-menu-hover-bg-color);
+        }
+
+        &:hover {
+          background-color: var(--el-menu-hover-bg-color);
+        }
+      }
+    }
+  }
+}
+
+// 箭头通用样式
+.icon-arrow-down-filling {
+  margin-left: 8px;
+  font-size: 10px;
+  color: var(--el-text-color-disabled);
+}
+
+// 通用的导航下拉框样式
+.shop-dropdown {
+  width: 160px;
+
+  .el-menu {
+    border-bottom: 0;
+
+    .el-sub-menu {
+      // 解决方案有 bug
+      &:hover {
+        .icon-arrow-down-filling {
+          transition: transform ease 0.5s;
+          transform: rotateZ(0.5turn);
+          transform-origin: center;
+        }
+      }
+
+      .el-icon {
+        display: none;
+      }
+
+      .el-sub-menu__title {
+        padding: 6px;
+        color: var(--el-text-color-primary);
+        border-bottom: 0 !important;
+      }
+    }
+  }
+}

@@ -12,6 +12,7 @@ module.exports = {
       customSyntax: 'postcss-scss',
     },
   ],
+  ignoreFontFamilies: ['iconfont'],
   rules: {
     'at-rule-no-unknown': null,
     'scss/at-rule-no-unknown': [true,
@@ -33,6 +34,10 @@ module.exports = {
     'selector-pseudo-class-no-unknown': [true,
       { ignorePseudoClasses: ['v-deep'] },
     ],
+    'scss/at-import-partial-extension': 'never',
+    'no-duplicate-selectors': null,
+    'selector-class-pattern': null,
+    'no-descending-specificity': null,
   },
   ignoreFiles: ['**/*.js', '**/*.jsx', '**/*.tsx', '**/*.ts'],
 }

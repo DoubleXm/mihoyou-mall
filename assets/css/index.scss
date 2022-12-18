@@ -1,0 +1,26 @@
+@import "./reset";
+@import "./font";
+@import "./variables.css";
+
+// scrollbar
+
+/* stylelint-disable */
+::-webkit-resizer,
+::-webkit-scrollbar-corner,
+::-webkit-scrollbar-button,
+::-webkit-scrollbar-track {
+  display: none;
+}
+
+::-webkit-scrollbar {
+  width: 14PX;
+  height: 14PX;
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #c5c5cb;
+  background-clip: content-box;
+  border: 5PX solid transparent;
+  border-radius: 999rem;
+}

@@ -1,19 +1,44 @@
 import Components from 'unplugin-vue-components/vite'
+import AutoImport from 'unplugin-auto-import/vite'
 import { ElementPlusResolver, VantResolver } from 'unplugin-vue-components/resolvers'
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  runtimeConfig: {
+    public: {
+      baseURL: 'https://api-mall.mihoyogift.com/',
+    },
+  },
   typescript: {
     shim: false,
   },
-  css: ['~/assets/index.css'],
-  modules: ['@pinia/nuxt', '@nuxtjs/tailwindcss'],
+  css: ['~/assets/css/index.scss'],
+  modules: ['@pinia/nuxt'],
   vite: {
     plugins: [
       Components({
-        resolvers: [ElementPlusResolver(), VantResolver({ importStyle: 'css' })],
+        resolvers: [
+          ElementPlusResolver({
+            importStyle: 'sass',
+            directives: true,
+            version: '2.1.5',
+          }),
+          VantResolver({ importStyle: 'css' }),
+        ],
+      }),
+      AutoImport({
+        resolvers: [ElementPlusResolver()],
       }),
     ],
+    css: {
+      preprocessorOptions: {
+        scss: {
+          additionalData: `
+            @use "~~/assets/css/element/index.scss" as *;
+          `,
+        },
+      },
+    },
     ssr: {
       noExternal: ['element-plus', 'vant'],
     },
@@ -25,14 +50,19 @@ export default defineNuxtConfig({
     plugins: {
       'postcss-px-to-viewport-8-plugin': {
         viewportWidth: 375,
-        include: ['**/m/**/*.{js,ts,tsx,vue}'],
+        exclude: [
+          /\/layouts\//,
+          /\/element-plus\//,
+          /\/assets\/element\//,
+        ],
       },
     },
   },
+  //  这个代理有点坑，虽然解决了跨域问题，但是并不能直接在模板中去请求外部接口
   nitro: {
     devProxy: {
       '/api': {
-        target: 'http://apis.juhe.cn/',
+        target: 'https://api-mall.mihoyogift.com/',
         changeOrigin: true,
       },
     },

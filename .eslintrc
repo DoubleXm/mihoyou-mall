@@ -7,5 +7,8 @@
     "@nuxtjs/eslint-config-typescript",
     "@antfu"
   ],
-  "rules": {}
+  "rules": {
+    "no-console": "off",
+    "no-useless-return": "off"
+  }
 }
