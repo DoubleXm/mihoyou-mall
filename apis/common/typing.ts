@@ -14,3 +14,20 @@ export interface ShopListItem {
   icon: string
 }
 
+export interface SearchSuggestionResult extends CommonResult {
+  data: {
+    keyword: string
+  }
+}
+
+export interface SearchHotwordResult extends CommonResult {
+  data: {
+    list: SearchHotwordItem[]
+  }
+}
+
+export interface SearchHotwordItem {
+  id: string
+  shop_code: string
+  text: string
+}

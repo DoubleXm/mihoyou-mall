@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { ElAvatar } from 'element-plus'
 import { getShopList } from '~~/apis/common'
 import type { ShopList } from '~~/apis/common/typing'
 
@@ -8,7 +7,7 @@ import type { ShopList } from '~~/apis/common/typing'
  */
 const shopList = ref<ShopList['data']['list']>([])
 const queryShopList = async () => {
-  const { data, error } = await useHttp<ShopList>(getShopList())
+  const { data, error } = await useHttp<ShopList>(getShopList)
 
   if (error.value) {
     ElMessage.error(error.value.toString())
@@ -35,7 +34,7 @@ const handleSelect = (key: string, keyPath: string[]) => {
       <header>
         <div class="header-l">
           <NuxtLink to="/">
-            <img class="" src="~/assets/images/logo.png" alt="logo">
+            <img src="~/assets/images/logo.png" alt="logo">
           </NuxtLink>
           <div class="shop-list__divider" />
           <div class="shop-dropdown">
@@ -64,13 +63,9 @@ const handleSelect = (key: string, keyPath: string[]) => {
         </div>
 
         <div class="header-r">
-          <ElInput>
-            <template #append>
-              <i class="iconfont icon-search" />
-            </template>
-          </ElInput>
+          <HeaderSearch />
 
-          <ElAvatar>User</ElAvatar>
+          <ElAvatar src="/avatar.png" />
 
           <div class="goods-card">
             <i class="iconfont icon-shop-cart-" />
@@ -124,43 +119,7 @@ const handleSelect = (key: string, keyPath: string[]) => {
       display: flex;
       align-items: center;
 
-      ::v-deep(.el-input) {
-        :hover {
-          color: var(--el-color-info);
-          .el-input-group__append {
-            border: 1px solid var(--el-color-info);
-            border-left: 0;
-            box-shadow: none;
-          }
-        }
-
-        .el-input__wrapper {
-          box-sizing: border-box;
-          &:hover {
-            +.el-input-group__append {
-              box-shadow: 0 1px 0 0 var(--el-input-hover-border-color) inset, 0 -1px 0 0 var(--el-input-hover-border-color) inset, -1px 0 0 0 var(--el-input-hover-border-color) inset;
-            }
-          }
-          &.is-focus {
-            box-shadow: 0 0 0 1px var(--el-color-info, var(--el-color-info)) inset;
-            +.el-input-group__append {
-              box-shadow: 0 1px 0 0 var(--el-color-info) inset, 0 -1px 0 0 var(--el-color-info) inset, -1px 0 0 0 var(--el-color-info) inset;
-            }
-          }
-        }
-
-        .el-input-group__append {
-          box-sizing: border-box;
-          padding: 0 8px;
-          .icon-search {
-            font-size: 22px;
-          }
-        }
-
-      }
-
       .el-avatar {
-        height: 32px;
         border-radius: 50%;
         margin: 0 20px;
         background-color: var(--el-color-info);
@@ -176,6 +135,7 @@ const handleSelect = (key: string, keyPath: string[]) => {
           font-size: 18px;
         }
         &:hover {
+          cursor: pointer;
           color: var(--el-color-primary);
         }
       }

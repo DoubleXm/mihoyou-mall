@@ -9,6 +9,8 @@
   ],
   "rules": {
     "no-console": "off",
-    "no-useless-return": "off"
+    "no-useless-return": "off",
+    "import/no-mutable-exports": "off",
+    "/no-new": "off"
   }
 }

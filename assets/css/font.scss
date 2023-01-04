@@ -1,10 +1,11 @@
+/* CDN 服务仅供平台体验和调试使用，平台不承诺服务的稳定性，企业客户需下载字体包自行发布使用并做好备份。 */
 @font-face {
-  font-family: iconfont; /* Project id 3812857 */
+  font-family: iconfont;  /* Project id 3812857 */
   src:
-    url("//at.alicdn.com/t/c/font_3812857_l1q9px9ra7r.woff2?t=1670344508742") format("woff2"),
-    url("//at.alicdn.com/t/c/font_3812857_l1q9px9ra7r.woff?t=1670344508742") format("woff"),
-    url("//at.alicdn.com/t/c/font_3812857_l1q9px9ra7r.ttf?t=1670344508742") format("truetype"),
-    url("//at.alicdn.com/t/c/font_3812857_l1q9px9ra7r.svg?t=1670344508742#iconfont") format("svg");
+    url("//at.alicdn.com/t/c/font_3812857_psihhgyz5gg.woff2?t=1672760601248") format("woff2"),
+    url("//at.alicdn.com/t/c/font_3812857_psihhgyz5gg.woff?t=1672760601248") format("woff"),
+    url("//at.alicdn.com/t/c/font_3812857_psihhgyz5gg.ttf?t=1672760601248") format("truetype"),
+    url("//at.alicdn.com/t/c/font_3812857_psihhgyz5gg.svg?t=1672760601248#iconfont") format("svg");
 }
 
 .iconfont {
@@ -30,4 +31,8 @@
 
 .icon-arrow-down-filling::before {
   content: "\e688";
+}
+
+.icon-shanchu::before {
+  content: "\e68c";
 }

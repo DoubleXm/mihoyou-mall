@@ -1,0 +1,3 @@
+export enum STORAGE_KEY {
+  SEARCH_HISTORY = 'SEARCH_HISTORY',
+}
