@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { ElInput } from 'element-plus'
+import type { ElInput } from 'element-plus'
+import type { SearchHotwordResult, SearchSuggestionResult } from '~/apis/common/typing'
+
 import { getSearchHotword, getSearchSuggestion } from '~/apis/common'
 import { storage } from '~/utils/storage'
 import { STORAGE_KEY } from '~/settings/enmu'
-
-import type { SearchHotwordResult, SearchSuggestionResult } from '~/apis/common/typing'
 
 const searchHotword = ref<SearchHotwordResult['data']['list']>([])
 const searchSuggestion = ref('')
@@ -27,7 +27,7 @@ const querySearchHotword = async () => {
     ElMessage.error(error.value.toString())
     return
   }
-  console.log(data.value)
+
   searchHotword.value = data.value!.data.list
 }
 
@@ -168,12 +168,6 @@ await querySearchSuggestion()
   position: relative;
 
   .search-input {
-    // &:focus-within {
-    //   +.search-history {
-    //     opacity: 1;
-    //     z-index: 3000;
-    //   }
-    // }
 
     :hover {
       color: var(--el-color-info);
@@ -200,9 +194,6 @@ await querySearchSuggestion()
 
       .el-input__inner {
         transition: width ease .4s;
-        // &:focus {
-        //   width: 400PX;
-        // }
       }
     }
 

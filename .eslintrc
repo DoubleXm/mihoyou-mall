@@ -11,6 +11,7 @@
     "no-console": "off",
     "no-useless-return": "off",
     "import/no-mutable-exports": "off",
-    "/no-new": "off"
+    "no-new": "off",
+    "@typescript-eslint/consistent-type-imports": "off"
   }
 }

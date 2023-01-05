@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { getShopList } from '~~/apis/common'
-import type { ShopList } from '~~/apis/common/typing'
+import type { ShopList } from '~/apis/common/typing'
+
+import { getShopList } from '~/apis/common'
 
 /**
  * 获取商品列表数据
