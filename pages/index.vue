@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-useMobile()
+
 </script>
 
 <template>
-  <NuxtLayout>
-    this is content
-  </NuxtLayout>
+  <div class="home-page">
+    this is home page...
+  </div>
 </template>

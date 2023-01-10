@@ -38,6 +38,7 @@ module.exports = {
     'no-duplicate-selectors': null,
     'selector-class-pattern': null,
     'no-descending-specificity': null,
+    'unit-case': null,
   },
   ignoreFiles: ['**/*.js', '**/*.jsx', '**/*.tsx', '**/*.ts'],
 }

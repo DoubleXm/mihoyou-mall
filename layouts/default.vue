@@ -1,12 +1,27 @@
 <script setup lang="ts">
-import type { ShopList } from '~/apis/common/typing'
+import type { ShopList, ShopListItem } from '~/apis/common/typing'
 
 import { getShopList } from '~/apis/common'
+
+const route = useRoute()
+
+const shopList = ref<ShopList['data']['list']>([])
+const menuSelectedItem = ref<ShopListItem | undefined>(undefined)
+
+watchEffect(() => {
+  if (shopList.value.length && route.path !== '/') {
+    const currentMenu = route.path.match(/\/\w+/)
+    if (currentMenu?.length)
+      menuSelectedItem.value = shopList.value.find(item => item.shop_code === currentMenu[0])
+  }
+
+  if (route.path === '/')
+    menuSelectedItem.value = undefined
+})
 
 /**
  * 获取商品列表数据
  */
-const shopList = ref<ShopList['data']['list']>([])
 const queryShopList = async () => {
   const { data, error } = await useHttp<ShopList>(getShopList)
 
@@ -15,7 +30,7 @@ const queryShopList = async () => {
     return
   }
 
-  shopList.value = data.value!.data.list
+  shopList.value = data.value!.data.list.map(i => ({ ...i, shop_code: `/${i.shop_code}` }))
 }
 
 await queryShopList()
@@ -23,9 +38,8 @@ await queryShopList()
 /**
  * Dropdown
  */
-const activeIndex = ref('1')
-const handleSelect = (key: string, keyPath: string[]) => {
-  console.log(key, keyPath)
+const menuSelectHandler = (key: string) => {
+  menuSelectedItem.value = shopList.value.find(item => item.shop_code === key)
 }
 </script>
 
@@ -39,22 +53,28 @@ const handleSelect = (key: string, keyPath: string[]) => {
           </NuxtLink>
           <div class="shop-list__divider" />
           <div class="shop-dropdown">
-            <!-- <img src="" alt=""> -->
             <ClientOnly>
+              <img v-if="menuSelectedItem" :src="menuSelectedItem.icon" :alt="menuSelectedItem.shop_code">
               <ElMenu
                 class="shop-dropdown__menu"
-                :default-active="activeIndex"
+                router
                 mode="horizontal"
-                @select="handleSelect"
+                :default-active="menuSelectedItem?.shop_code"
+                @select="menuSelectHandler"
               >
                 <ElSubMenu
                   index="1"
+                  :popper-offset="-20"
                 >
                   <template #title>
                     选择店铺
                     <i class="iconfont icon-arrow-down-filling" />
                   </template>
-                  <ElMenuItem v-for="(item, index) in shopList" :key="item.shop_code" :index="`1-${index}`">
+                  <ElMenuItem
+                    v-for="item in shopList"
+                    :key="item.shop_code"
+                    :index="item.shop_code"
+                  >
                     {{ item.shop_name }}
                   </ElMenuItem>
                 </ElSubMenu>
@@ -75,7 +95,7 @@ const handleSelect = (key: string, keyPath: string[]) => {
         </div>
       </header>
 
-      <main class="container">
+      <main class="page-container">
         <slot />
       </main>
     </ElConfigProvider>
@@ -86,6 +106,7 @@ const handleSelect = (key: string, keyPath: string[]) => {
 .container {
   width: 100%;
   height: auto;
+  min-width: 1280px;
   min-height: 100vh;
   background-color: var(--home-bg-color);
   header {
@@ -102,6 +123,7 @@ const handleSelect = (key: string, keyPath: string[]) => {
 
     .header-l {
       display: flex;
+      flex: 1;
       align-items: center;
       img {
         width: 123px;
@@ -118,6 +140,8 @@ const handleSelect = (key: string, keyPath: string[]) => {
 
     .header-r {
       display: flex;
+      flex: 1;
+      justify-content: flex-end;
       align-items: center;
 
       .el-avatar {

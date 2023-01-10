@@ -12,29 +12,34 @@ export default defineNuxtConfig({
   typescript: {
     shim: false,
   },
-  css: ['~/assets/css/index.scss'],
+  css: [
+    'element-plus/theme-chalk/src/index.scss', // full import (autoimport has some error)
+    // 'element-plus/theme-chalk/src/dark/css-vars.scss', // dark mode
+    '~/assets/css/index.scss',
+  ],
   modules: ['@pinia/nuxt'],
   vite: {
     plugins: [
       Components({
         resolvers: [
           ElementPlusResolver({
-            importStyle: 'sass',
+            // importStyle: 'sass',
             directives: true,
             version: '2.1.5',
+            importStyle: false,
           }),
           VantResolver({ importStyle: 'css' }),
         ],
       }),
       AutoImport({
-        resolvers: [ElementPlusResolver()],
+        resolvers: [ElementPlusResolver({ importStyle: false })],
       }),
     ],
     css: {
       preprocessorOptions: {
         scss: {
           additionalData: `
-            @use "~~/assets/css/element/index.scss" as *;
+            @use "~/assets/css/element/index.scss" as *;
           `,
         },
       },
@@ -53,7 +58,6 @@ export default defineNuxtConfig({
         exclude: [
           /\/layouts\//,
           /\/element-plus\//,
-          /\/assets\/element\//,
         ],
       },
     },

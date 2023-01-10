@@ -21,8 +21,10 @@ export const useHttp = async <Result = unknown, Body = unknown, Param = unknown>
   return useFetch<Result, string>(apiURL, {
     method: opts?.method ? opts?.method : 'GET',
     body: opts?.body,
-    headers: {},
+    headers: {
+      // 'Content-Type': 'application/json',
+    },
     params: opts?.params,
-    mode: 'cors',
+    mode: 'no-cors',
   })
 }
