@@ -7,6 +7,18 @@ const route = useRoute()
 
 const shopList = ref<ShopList['data']['list']>([])
 const menuSelectedItem = ref<ShopListItem | undefined>(undefined)
+// const footerAuthInfo = reactive([
+//   { src: import('~/assets/images/footer-auth/license.webp'), alt: '电子营业执照' },
+//   { src: '~/assets/images/footer-auth/report-1.webp', alt: '上海市互联网违法和不良信息举报中心' },
+//   { src: '~/assets/images/footer-auth/report-2.webp', alt: '上海市互联网违法和不良信息举报中心' },
+//   { src: '~/assets/images/footer-auth/report-3.webp', alt: '违法和不良信息举报中心' },
+// ])
+const footerLinks = reactive([
+  { link: '/', target: '_self', text: '首页', className: '' },
+  { link: '#', target: '_blank', text: '隐私政策', className: 'protocol' },
+  { link: '#', target: '_blank', text: '商城服务协议', className: 'protocol' },
+  { link: '#', target: '_blank', text: '加入我们', className: 'protocol' },
+])
 
 watchEffect(() => {
   if (shopList.value.length && route.path !== '/') {
@@ -98,6 +110,42 @@ const menuSelectHandler = (key: string) => {
       <main class="page-container">
         <slot />
       </main>
+
+      <footer>
+        <div class="footer-l">
+          <img src="~/assets/images/footer-logo.webp" alt="footer-logo">
+        </div>
+
+        <div class="footer-r">
+          <ul class="footer-link">
+            <li v-for="item in footerLinks" :key="item.text">
+              <NuxtLink :to="item.link" :target="item.target">
+                {{ item.text }}
+              </NuxtLink>
+            </li>
+          </ul>
+          <div class="copyright">
+            <p>© 2021 米哈游版权所有｜ <a href="#">沪公网安备31010402009928号</a> ｜ <a href="#">沪ICP备2021018283号-2</a> </p>
+            <p>沪网文〔2021〕3859-324号｜增值电信业务经营许可证：沪B2-20220200 </p>
+            <p>互联网违法不良信息举报电话：021-34203135（工作时间：每天10点-20点）｜互联网违法不良信息举报邮箱：tousu@mihoyo.com</p>
+            <p>亲爱的市民朋友，上海警方反诈劝阻电话“962110”系专门针对避免您财产被骗受损而设，请您一旦收到来电，立即接听。</p>
+          </div>
+          <div class="footer-auth">
+            <a href="#">
+              <img src="~/assets/images/footer-auth/license.webp" alt="电子营业执照">
+            </a>
+            <a href="#">
+              <img src="~/assets/images/footer-auth/report-1.webp" alt="上海市互联网违法和不良信息举报中心">
+            </a>
+            <a href="#">
+              <img src="~/assets/images/footer-auth/report-2.webp" alt="上海市互联网违法和不良信息举报中心">
+            </a>
+            <a href="#">
+              <img src="~/assets/images/footer-auth/report-3.webp" alt="违法和不良信息举报中心">
+            </a>
+          </div>
+        </div>
+      </footer>
     </ElConfigProvider>
   </div>
 </template>
@@ -162,6 +210,80 @@ const menuSelectHandler = (key: string) => {
         &:hover {
           cursor: pointer;
           color: var(--el-color-primary);
+        }
+      }
+    }
+  }
+
+  .page-container {
+    min-height: 100vh;
+    margin-bottom: calc(179.5px + 44px);
+  }
+
+  footer {
+    display: flex;
+    align-items: center;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    padding: 22px 0;
+    background-color: var(--el-color-white);
+    .footer-l {
+      width: 166px;
+      height: 60px;
+      margin-left: 10px;
+      img {
+        width: 100%;
+        height: 100%;
+      }
+    }
+
+    .footer-r {
+      margin-left: 97px;
+      a {
+        font-size: 12px;
+        color: var(--el-text-color-primary);
+        text-decoration: none;
+        &:hover {
+          color: var(--footer-link-hover-color) !important;
+        }
+      }
+      .footer-link {
+        display: flex;
+        li {
+          position: relative;
+          margin-left: 36px;
+          line-height: 18px;
+          &:first-child {
+            margin-left: 0;
+          }
+          &.protocol::before {
+            content: "";
+            position: absolute;
+            left: -17px;
+            top: 60%;
+            margin-top: -6px;
+            display: inline-block;
+            width: 1px;
+            height: 12px;
+            background-color: #eff1f4;
+          }
+        }
+      }
+      .copyright {
+        margin: 20px 0;
+        line-height: 18px;
+        font-size: 12px;
+        color: var(--el-text-color-placeholder);
+        a {
+          color: var(--el-text-color-placeholder);
+        }
+      }
+      .footer-auth {
+        a {
+          width: 116px;
+          height: 48.5px;
+          margin-right: 10px;
         }
       }
     }
