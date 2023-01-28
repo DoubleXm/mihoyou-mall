@@ -3,7 +3,7 @@ import type { PropType } from 'vue'
 
 export interface SwiperBanner {
   idOrPath: string
-  src: string
+  src?: string
   type: 'GOODS_DETAIL' | 'MENU_DETAIL'
 }
 
@@ -52,8 +52,11 @@ const jumpToDetailPage = (item: SwiperBanner) => {
 
 <style lang="scss">
 .swiper-container {
-  img {
+  .el-carousel__container {
     width: 100%;
+    img {
+      width: 100%;
+    }
   }
 }
 </style>

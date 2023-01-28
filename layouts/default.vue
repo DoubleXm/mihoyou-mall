@@ -163,9 +163,9 @@ const menuSelectHandler = (key: string) => {
     justify-content: space-between;
     position: sticky;
     top: 0;
+    z-index: 3001;
     height: 100px;
-    padding: 0 10px;
-    padding-right: 40px;
+    padding: 0 80px;
     font-size: 14px;
     background-color: var(--el-color-white);
 
@@ -191,6 +191,7 @@ const menuSelectHandler = (key: string) => {
       flex: 1;
       justify-content: flex-end;
       align-items: center;
+      margin-right: 30px;
 
       .el-avatar {
         border-radius: 50%;
@@ -217,14 +218,14 @@ const menuSelectHandler = (key: string) => {
 
   .page-container {
     min-height: 100vh;
-    margin-bottom: calc(179.5px + 44px);
+    // margin-bottom: calc(179.5px + 44px);
   }
 
   footer {
     display: flex;
     align-items: center;
-    position: fixed;
-    bottom: 0;
+    // position: fixed;
+    // bottom: 0;
     width: 100%;
     padding: 22px 0;
     background-color: var(--el-color-white);

@@ -2,8 +2,17 @@
 @import "./font";
 @import "./variables.css";
 
-// scrollbar
+.marign-line-auto {
+  margin: 0 auto;
+}
 
+// 版心
+.type-area {
+  width: 936PX;
+  margin: 0 auto;
+}
+
+// scrollbar
 /* stylelint-disable */
 ::-webkit-resizer,
 ::-webkit-scrollbar-corner,
