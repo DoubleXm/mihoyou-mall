@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import type { ElInput } from 'element-plus'
-import type { SearchHotwordResult, SearchSuggestionResult } from '~/apis/common/typing'
+import type { SearchHotwordResult } from '~/apis/common/typing'
 
 import { getSearchHotword, getSearchSuggestion } from '~/apis/common'
 import { storage } from '~/utils/storage'
 import { STORAGE_KEY } from '~/settings/enmu'
+import { shopPages } from '~/settings'
+
+const route = useRoute()
 
 const searchHotword = ref<SearchHotwordResult['data']['list']>([])
 const searchSuggestion = ref('')
@@ -17,32 +20,41 @@ if (process.client)
 
 const searchSuggestionHistoryIsShow = computed(() => !!searchSuggestionHistory.value.length)
 
+const isDoSearch = computed(() =>
+  shopPages.includes(route.path) || route.path === '/' || shopPages.map(i => `${i}/goods`.includes(route.path)))
+
+const shopCodeParam = computed(() => {
+  const key = route.path.match(/[^\/][^$\/]+/) as RegExpMatchArray
+
+  return isDoSearch && Array.isArray(key) ? key[0] : ''
+})
+
 /**
  * get 关键词列表
  */
 const querySearchHotword = async () => {
-  const { data, error } = await useHttp<SearchHotwordResult>(getSearchHotword)
+  const result = await getSearchHotword(shopCodeParam.value)
 
-  if (error.value) {
-    ElMessage.error(error.value.toString())
+  if (result.retcode !== 0) {
+    ElMessage.error(result.message)
     return
   }
 
-  searchHotword.value = data.value!.data.list
+  searchHotword.value = result.data.list
 }
 
 /**
  * get 当前关键词
  */
 const querySearchSuggestion = async () => {
-  const { data, error } = await useHttp<SearchSuggestionResult>(getSearchSuggestion)
+  const result = await getSearchSuggestion(shopCodeParam.value)
 
-  if (error.value) {
-    ElMessage.error(error.value.toString())
+  if (result.retcode !== 0) {
+    ElMessage.error(result.message)
     return
   }
 
-  searchSuggestion.value = data.value!.data.keyword
+  searchSuggestion.value = result.data.keyword
 }
 
 /**
@@ -105,8 +117,18 @@ const searchInputBlur = () => {
   }, 200)
 }
 
-await querySearchHotword()
-await querySearchSuggestion()
+watch(
+  [() => isDoSearch.value, () => shopCodeParam.value],
+  async () => {
+    await querySearchSuggestion()
+    await querySearchHotword()
+  },
+)
+
+;(async () => {
+  await querySearchSuggestion()
+  await querySearchHotword()
+})()
 </script>
 
 <template>

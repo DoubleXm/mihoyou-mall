@@ -39,3 +39,10 @@ nuxt3 + pinia + tailwind + vant (postcss-px-to-viewport) + element-ui + ts
 ```
 stylelint + eslint (@antfu, @nuxtjs/eslint-config-typescript)
 ```
+
+
+`useAsyncData` 系列获取数据方法，模板绑定事件中无法触发。比如：
+
+```
+<ElButton @click="clickHandler">获取异步数据</ElButton>
+```

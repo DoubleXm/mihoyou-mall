@@ -2,6 +2,7 @@
 import type { ShopList, ShopListItem } from '~/apis/common/typing'
 
 import { getShopList } from '~/apis/common'
+import { shopPages } from '~/settings'
 
 const route = useRoute()
 
@@ -20,6 +21,10 @@ const footerLinks = reactive([
   { link: '#', target: '_blank', text: '加入我们', className: 'protocol' },
 ])
 
+// 首页、店铺页及店铺对应的商品列表页显示搜索框
+const isShowSearch = computed(() =>
+  shopPages.includes(route.path) || route.path === '/' || shopPages.map(i => `${i}/goods`.includes(route.path)))
+
 watchEffect(() => {
   if (shopList.value.length && route.path !== '/') {
     const currentMenu = route.path.match(/\/\w+/)
@@ -35,17 +40,19 @@ watchEffect(() => {
  * 获取商品列表数据
  */
 const queryShopList = async () => {
-  const { data, error } = await useHttp<ShopList>(getShopList)
+  const result = await getShopList()
 
-  if (error.value) {
-    ElMessage.error(error.value.toString())
+  if (result.retcode !== 0) {
+    ElMessage.error(result.message)
     return
   }
 
-  shopList.value = data.value!.data.list.map(i => ({ ...i, shop_code: `/${i.shop_code}` }))
+  shopList.value = result.data.list.map(i => ({ ...i, shop_code: `/${i.shop_code}` }))
 }
 
-await queryShopList()
+;(async () => {
+  await queryShopList()
+})()
 
 /**
  * Dropdown
@@ -96,7 +103,7 @@ const menuSelectHandler = (key: string) => {
         </div>
 
         <div class="header-r">
-          <HeaderSearch />
+          <HeaderSearch v-if="isShowSearch" />
 
           <ElAvatar src="/avatar.png" />
 
