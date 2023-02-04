@@ -24,6 +24,7 @@ specifiers:
   stylelint-config-recess-order: ^3.0.0
   stylelint-config-recommended-vue: ^1.4.0
   stylelint-config-standard-scss: ^6.1.0
+  swiper: ^9.0.2
   typescript: ^4.9.3
   unplugin-auto-import: ^0.12.0
   unplugin-vue-components: ^0.22.11
@@ -34,6 +35,7 @@ dependencies:
   axios: 1.3.2
   element-plus: 2.2.25
   pinia: 2.0.27_typescript@4.9.3
+  swiper: 9.0.2
   typescript: 4.9.3
   vant: 4.0.0
 
@@ -4366,6 +4368,13 @@ packages:
     engines: {node: '>= 0.4'}
     dev: true
 
+  /swiper/9.0.2:
+    resolution: {integrity: sha512-6iGqr9OeEMU7KVfGxXNW+xhVWmqvVhtt+1nnqbZ0a0i1p/S1rXgr9cPD55k7DFxeOojVHkiEqmsubaP3NgWwUQ==}
+    engines: {node: '>= 4.7.0'}
+    dependencies:
+      ssr-window: r2.cnpmjs.org/ssr-window/4.0.2
+    dev: false
+
   /synckit/0.8.4:
     resolution: {integrity: sha512-Dn2ZkzMdSX827QbowGbU/4yjWuvNaCoScLLoMo/yKbu+P4GBR6cRGKZH27k6a9bRzdqcyd1DE96pQtQ6uNkmyw==}
     engines: {node: ^14.18.0 || >=16.0.0}
@@ -8552,6 +8561,12 @@ packages:
     dependencies:
       readable-stream: r2.cnpmjs.org/readable-stream/3.6.0
     dev: true
+
+  r2.cnpmjs.org/ssr-window/4.0.2:
+    resolution: {integrity: sha512-ISv/Ch+ig7SOtw7G2+qkwfVASzazUnvlDTwypdLoPoySv+6MqlOV10VwPSE6EWkGjhW50lUmghPmpYZXMu/+AQ==, registry: https://r.cnpmjs.org/, tarball: https://r2.cnpmjs.org/ssr-window/-/ssr-window-4.0.2.tgz}
+    name: ssr-window
+    version: 4.0.2
+    dev: false
 
   r2.cnpmjs.org/stable/0.1.8:
     resolution: {integrity: sha512-ji9qxRnOVfcuLDySj9qzhGSEFVobyt1kIOSkj1qZzYLzq7Tos/oUUWvotUPQLlrsidqsK6tBH89Bc9kL5zHA6w==, registry: https://r.cnpmjs.org/, tarball: https://r2.cnpmjs.org/stable/-/stable-0.1.8.tgz}

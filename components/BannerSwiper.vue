@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import type { PropType } from 'vue'
 
+import { Swiper, SwiperSlide } from 'swiper/vue'
+import 'swiper/css'
+
 export interface SwiperBanner {
   idOrPath: string
   src?: string
@@ -8,14 +11,6 @@ export interface SwiperBanner {
 }
 
 defineProps({
-  width: {
-    type: Number,
-    default: 0,
-  },
-  height: {
-    type: Number,
-    default: 0,
-  },
   swiperList: {
     type: Array as PropType<SwiperBanner[]>,
     default: () => ([]),
@@ -36,27 +31,20 @@ const jumpToDetailPage = (item: SwiperBanner) => {
 </script>
 
 <template>
-  <ElCarousel
-    class="swiper-container"
-    v-bind="$attrs"
-    :height="`${height}px`"
-    :style="{ width: `${width}px` }"
-  >
-    <ElCarouselItem v-for="item in swiperList" :key="item.src">
+  <Swiper v-bind="$attrs">
+    <SwiperSlide v-for="item in swiperList" :key="item.src">
       <a href="#" @click.prevent="jumpToDetailPage(item)">
         <img :src="item.src" :alt="item.idOrPath">
       </a>
-    </ElCarouselItem>
-  </ElCarousel>
+    </SwiperSlide>
+  </Swiper>
 </template>
 
 <style lang="scss">
-.swiper-container {
-  .el-carousel__container {
+.swiper {
+  width: 100%;
+  img {
     width: 100%;
-    img {
-      width: 100%;
-    }
   }
 }
 </style>

@@ -78,10 +78,6 @@ onMounted(() => {
     <div class="type-area">
       <div class="swiper-banner-container">
         <BannerSwiper
-          :width="936"
-          :height="222"
-          arrow="never"
-          indicator-position="none"
           :swiper-list="swiperBannerList"
         />
       </div>
@@ -142,6 +138,10 @@ onMounted(() => {
     justify-content: center;
     width: 100%;
     margin: 15PX auto;
+    .swiper-wrapper {
+      width: 936PX;
+      height: 222PX;
+    }
   }
 
   .home-bg {
