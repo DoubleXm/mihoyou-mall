@@ -16,3 +16,10 @@ export const arrayDimensionalTransform = (target: [], n: number) => {
   }
   return res
 }
+
+/**
+ * @description 单词首字母大写
+ */
+export const firstLetterCapitl = (str: string) => {
+  return str.replace(/^\S/, s => s.toUpperCase())
+}
