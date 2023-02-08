@@ -23,6 +23,7 @@ div[id*="el-popper-container"] {
       .el-menu-item {
         padding: 0 10PX;
         margin: 0 10PX;
+        line-height: 36PX;
         border-radius: 4PX;
 
         &.is-active {
@@ -45,11 +46,7 @@ div[id*="el-popper-container"] {
 }
 
 // 通用的导航下拉框样式
-.shop-dropdown {
-  display: flex;
-  flex: 1;
-  width: 100%;
-
+.shop-dorpdown {
   .el-menu {
     width: 100%;
     border-bottom: 0;
@@ -72,6 +69,10 @@ div[id*="el-popper-container"] {
         padding: 6PX;
         color: var(--el-text-color-primary);
         border-bottom: 0 !important;
+
+        i {
+          color: var(--el-text-color-disabled);
+        }
       }
     }
   }

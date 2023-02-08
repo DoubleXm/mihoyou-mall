@@ -1,4 +1,4 @@
-import type { SearchHotwordResult, SearchSuggestionResult, ShopList } from './typing'
+import type { CategoryListResult, SearchHotwordResult, SearchSuggestionResult, ShopList } from './typing'
 
 import { http } from '~/utils/http'
 
@@ -30,6 +30,17 @@ export function getSearchSuggestion(shop_code?: string) {
   return http.request<SearchSuggestionResult>({
     method: 'GET',
     url: 'common/homeishop/v1/search/suggestion',
+    params: { shop_code },
+  })
+}
+
+/**
+ * 获取商品分类列表
+ */
+export function getCategoryList(shop_code?: string) {
+  return http.request<CategoryListResult>({
+    method: 'GET',
+    url: 'common/homeishop/v1/category/get_category_list',
     params: { shop_code },
   })
 }

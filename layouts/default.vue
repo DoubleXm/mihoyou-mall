@@ -71,11 +71,10 @@ const menuSelectHandler = (key: string) => {
             <img src="~/assets/images/logo.png" alt="logo">
           </NuxtLink>
           <div class="shop-list__divider" />
-          <div class="shop-dropdown">
+          <div class="shop-dropdown-header shop-dorpdown">
             <ClientOnly>
               <img v-if="menuSelectedItem" :src="menuSelectedItem.icon" :alt="menuSelectedItem.shop_code">
               <ElMenu
-                class="shop-dropdown__menu"
                 router
                 mode="horizontal"
                 :default-active="menuSelectedItem?.shop_code"
@@ -190,6 +189,12 @@ const menuSelectHandler = (key: string) => {
         margin: 18px;
         border-radius: 1.5px;
         background-color: #f1f1f1;
+      }
+
+      .shop-dropdown-header {
+        display: flex;
+        flex: 1;
+        width: 100%;
       }
     }
 

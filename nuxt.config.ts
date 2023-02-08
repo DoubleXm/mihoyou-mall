@@ -71,4 +71,7 @@ export default defineNuxtConfig({
       },
     },
   },
+  build: {
+    transpile: ['swiper'],
+  },
 })

@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { shopPages } from '@/settings'
+import { shopPages } from '~/settings'
 
 definePageMeta({
+  // 路由校验
   validate: async (route) => {
     return !!shopPages.find(i => i === route.path)
   },
@@ -16,7 +17,9 @@ const pathKey = computed(() => {
 </script>
 
 <template>
-  <div>
+  <div class="shop-page">
+    <CategoryNavbar />
+
     {{ pathKey }}
   </div>
 </template>

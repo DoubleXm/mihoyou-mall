@@ -2,10 +2,10 @@
 @font-face {
   font-family: iconfont;  /* Project id 3812857 */
   src:
-    url("//at.alicdn.com/t/c/font_3812857_psihhgyz5gg.woff2?t=1672760601248") format("woff2"),
-    url("//at.alicdn.com/t/c/font_3812857_psihhgyz5gg.woff?t=1672760601248") format("woff"),
-    url("//at.alicdn.com/t/c/font_3812857_psihhgyz5gg.ttf?t=1672760601248") format("truetype"),
-    url("//at.alicdn.com/t/c/font_3812857_psihhgyz5gg.svg?t=1672760601248#iconfont") format("svg");
+    url("//at.alicdn.com/t/c/font_3812857_1bscvh2doj2.woff2?t=1675697522526") format("woff2"),
+    url("//at.alicdn.com/t/c/font_3812857_1bscvh2doj2.woff?t=1675697522526") format("woff"),
+    url("//at.alicdn.com/t/c/font_3812857_1bscvh2doj2.ttf?t=1675697522526") format("truetype"),
+    url("//at.alicdn.com/t/c/font_3812857_1bscvh2doj2.svg?t=1675697522526#iconfont") format("svg");
 }
 
 .iconfont {
@@ -15,6 +15,10 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-jiantouyou::before {
+  content: "\e62d";
 }
 
 .icon-ico-top::before {
