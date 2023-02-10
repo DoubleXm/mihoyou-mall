@@ -30,4 +30,20 @@ export const shopConfig: ShopConfigType = {
     content2: 'https://uploadstatic.mihoyo.com/puzzle/upload/puzzle/2023/02/02/016bc2e9143970280ac8f850fae088ac_1169910320637442119.jpg?x-oss-process=image/format,webp/quality,Q_90',
     content3: 'https://uploadstatic.mihoyo.com/puzzle/upload/puzzle/2023/02/02/526161a37adf321b3c90506330f8b298_6844640798072996441.jpg?x-oss-process=image/format,webp/quality,Q_90',
   },
+  // 别野百货
+  dby: {
+    banner: 'https://uploadstatic.mihoyo.com/puzzle/upload/puzzle/2022/08/11/5629c6f4c42813153627cfa58886ad53_3624671312286801309.jpg?x-oss-process=image/format,webp/quality,Q_90',
+    content1: 'https://uploadstatic.mihoyo.com/puzzle/upload/puzzle/2023/01/19/71b52b465932b313b81d37fbe44df411_5422375187876247629.jpg?x-oss-process=image/format,webp/quality,Q_90',
+    content2: 'https://uploadstatic.mihoyo.com/puzzle/upload/puzzle/2023/01/19/ff6088b0d64997886f30de8fa23e1f0b_4780209136421639607.jpg?x-oss-process=image/format,webp/quality,Q_90',
+    content3: 'https://uploadstatic.mihoyo.com/puzzle/upload/puzzle/2023/01/19/8929059caf7f72eccae944dce26d2349_2337894816519924985.jpg?x-oss-process=image/format,webp/quality,Q_90',
+    content4: 'https://uploadstatic.mihoyo.com/puzzle/upload/puzzle/2022/11/18/77adcd068d41cc3a671c1e895d8cf5b3_8089260019433749073.jpg?x-oss-process=image/format,webp/quality,Q_90',
+  },
+  // 空港集市
+  bh3: {
+    banner: 'https://uploadstatic.mihoyo.com/puzzle/upload/puzzle/2023/02/07/105641bac8d349de693ee162384398bb_7329785140500596933.jpg?x-oss-process=image/format,webp/quality,Q_90',
+  },
+  // 千语万事屋
+  bh2: {
+    banner: 'https://uploadstatic.mihoyo.com/puzzle/upload/puzzle/2023/02/02/bbe5d8f719d66485f81aab38c5c95636_2958715276020632541.jpg?x-oss-process=image/format,webp/quality,Q_90',
+  },
 }

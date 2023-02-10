@@ -1,24 +1,21 @@
 <script lang="ts">
-import { shopConfig } from '~/settings/static'
+import { defineComponent } from 'vue'
 
 export default defineComponent({
   name: 'ShopBh3',
-  setup() {
-    return {
-      shopConfig,
-    }
-  },
 })
 </script>
 
 <template>
-  <div class="wd-wrapper">
-    <div class="banner">
-      <img :src="shopConfig.wd.banner" alt="banner">
-    </div>
-
-    <div class="content-1" />
-    <div class="content-2" />
-    <div class="content-3" />
-  </div>
+  <div class="bh3-wrapper" />
 </template>
+
+<style lang="scss">
+.bh3-wrapper {
+  height: 7640PX;
+  background-position: center center;
+  background-repeat:  no-repeat;
+  background-size: cover;
+  background-image: url(https://uploadstatic.mihoyo.com/puzzle/upload/puzzle/2023/02/07/105641bac8d349de693ee162384398bb_7329785140500596933.jpg?x-oss-process=image/format,webp/quality,Q_90);
+}
+</style>
