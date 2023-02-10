@@ -55,3 +55,27 @@ export interface CategoryListItem {
   id: number
   name: string
 }
+
+/**
+ * 商品列表
+ */
+export interface GoodsListResult extends CommonResult {
+  data: {
+    list: GoodsListItem[]
+  }
+}
+
+export interface GoodsListItem {
+  cover_url: string
+  goods_id: string
+  is_sold_out: boolean
+  market_price: number
+  name: string
+  presale: boolean
+  price: number
+  remaining_time: number
+  sale_time: number
+  status: number
+  // 1: 新品 3: 推荐 0: 正常商品
+  tag: 1 | 3 | 0
+}

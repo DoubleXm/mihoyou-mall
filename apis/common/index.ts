@@ -1,4 +1,4 @@
-import type { CategoryListResult, SearchHotwordResult, SearchSuggestionResult, ShopList } from './typing'
+import type { CategoryListResult, GoodsListResult, SearchHotwordResult, SearchSuggestionResult, ShopList } from './typing'
 
 import { http } from '~/utils/http'
 
@@ -42,5 +42,16 @@ export function getCategoryList(shop_code?: string) {
     method: 'GET',
     url: 'common/homeishop/v1/category/get_category_list',
     params: { shop_code },
+  })
+}
+
+/**
+ * 获取商品页商品列表（目前仅原神中会用到）
+ */
+export function getShopGoodsList(datas: { puzzle_id: string; component_id: string }) {
+  return http.request<GoodsListResult>({
+    method: 'GET',
+    url: 'common/homeishop/v1/goods/puzzle_goods_info',
+    params: { datas },
   })
 }

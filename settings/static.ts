@@ -46,4 +46,19 @@ export const shopConfig: ShopConfigType = {
   bh2: {
     banner: 'https://uploadstatic.mihoyo.com/puzzle/upload/puzzle/2023/02/02/bbe5d8f719d66485f81aab38c5c95636_2958715276020632541.jpg?x-oss-process=image/format,webp/quality,Q_90',
   },
+  // 原神
+  ys: {
+    banner: 'https://uploadstatic.mihoyo.com/puzzle/upload/puzzle/2023/01/30/a045201b9b4b6887818957fa8863d60d_8134370532093818927.jpg?x-oss-process=image/format,webp/quality,Q_90',
+    goodGoods: 'https://uploadstatic.mihoyo.com/puzzle/upload/puzzle/2023/01/30/e180bd7edcf3840d0f0ea7e7d770caf5_5961110765148775096.jpg?x-oss-process=image/format,webp/quality,Q_90',
+    garateKit: 'https://uploadstatic.mihoyo.com/puzzle/upload/puzzle/2023/01/30/31ff895db2c2632c449db0e64d268f32_4704739799258534104.jpg?x-oss-process=image/format,webp/quality,Q_90',
+    stores: 'https://uploadstatic.mihoyo.com/puzzle/upload/puzzle/2023/01/30/b41d89baacb4556eb5d73bec9429fff0_8418348741069772590.jpg?x-oss-process=image/format,webp/quality,Q_90',
+    plushToys: 'https://uploadstatic.mihoyo.com/puzzle/upload/puzzle/2023/01/30/280f7fc310374e4a3ae5bf8bc2ce4112_1454471706164767243.jpg?x-oss-process=image/format,webp/quality,Q_90',
+    clothes: 'https://uploadstatic.mihoyo.com/puzzle/upload/puzzle/2023/01/30/78f71d577cbc94d329b75df30f439e31_2486754311454212837.jpg?x-oss-process=image/format,webp/quality,Q_90',
+    clothesBanner: 'https://uploadstatic.mihoyo.com/puzzle/upload/puzzle/2023/01/30/51ff01d50c2b13cbe5661296579794ab_5043816789992873067.jpg?x-oss-process=image/format,webp/quality,Q_90',
+    pendant: 'https://uploadstatic.mihoyo.com/puzzle/upload/puzzle/2023/01/30/82ccda0bf288606848810783f9fd47bc_347750234097809529.jpg?x-oss-process=image/format,webp/quality,Q_90',
+    theme: 'https://uploadstatic.mihoyo.com/puzzle/upload/puzzle/2023/01/30/e2eb805294e6f755ce9160aa2e5b0d7a_654287056465942441.jpg?x-oss-process=image/format,webp/quality,Q_90',
+    themeTopBanner: 'https://uploadstatic.mihoyo.com/puzzle/upload/puzzle/2023/01/30/085a9361001a3951af5fb1b9a05b296b_6461250552033191225.jpg?x-oss-process=image/format,webp/quality,Q_90',
+    themeBottomBanner: 'https://uploadstatic.mihoyo.com/puzzle/upload/puzzle/2023/01/30/249fc6898d58514488a816845d9f0ca4_2074995051242932384.jpg?x-oss-process=image/format,webp/quality,Q_90',
+    more: 'https://uploadstatic.mihoyo.com/puzzle/upload/puzzle/2023/01/30/f6f50b772debfa3068a4824634368a08_4148906054893906816.jpg?x-oss-process=image/format,webp/quality,Q_90',
+  },
 }
