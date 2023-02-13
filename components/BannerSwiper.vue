@@ -24,7 +24,7 @@ const router = useRouter()
  */
 const jumpToDetailPage = (item: SwiperBanner) => {
   if (item.type === 'GOODS_DETAIL')
-    router.push({ name: 'goods_detial', params: { id: item.idOrPath } })
+    router.push({ name: 'goods_id', params: { id: item.idOrPath } })
   else
     router.push(item.idOrPath)
 }

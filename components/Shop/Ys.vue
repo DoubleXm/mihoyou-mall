@@ -1,22 +1,62 @@
 <script lang="ts">
 import { getShopGoodsList } from '~/apis/common'
 import { shopConfig } from '~/settings/static'
+import { toKebabCase } from '~/utils'
+
+import type { GoodsListItem } from '~~/apis/common/typing'
+
+interface ApiParams {
+  [key: string]: {
+    puzzle_id: string
+    component_id: string
+  }
+}
 
 export default defineComponent({
   name: 'ShopYs',
   setup() {
-    // 不确定是什么值，反正拿来能用
-    const apiParams: { puzzle_id: string; component_id: string }[] = [
-      { puzzle_id: 'mall_cn_ys_1674114355', component_id: 'pz-30KlpKySWd' },
-      { puzzle_id: 'mall_cn_ys_1674114355', component_id: 'pz-cJ9TZgRuwd' },
-      { puzzle_id: 'mall_cn_ys_1674114355', component_id: 'pz-z5FRd5pbfw' },
-      { puzzle_id: 'mall_cn_ys_1674114355', component_id: 'pz-JUfEB0CuAr' },
-      { puzzle_id: 'mall_cn_ys_1674114355', component_id: 'pz-4WX9Gk6hO4' },
-      { puzzle_id: 'mall_cn_ys_1674114355', component_id: 'pz-BdWCqpKBaN' },
-    ]
+    const router = useRouter()
 
+    // 不确定是什么值，反正拿来能用
+    const apiParams: ApiParams = {
+      goodGoods: { puzzle_id: 'mall_cn_ys_1674114355', component_id: 'pz-30KlpKySWd' },
+      garateKit: { puzzle_id: 'mall_cn_ys_1674114355', component_id: 'pz-cJ9TZgRuwd' },
+      stores: { puzzle_id: 'mall_cn_ys_1674114355', component_id: 'pz-z5FRd5pbfw' },
+      plushToys: { puzzle_id: 'mall_cn_ys_1674114355', component_id: 'pz-JUfEB0CuAr' },
+      clothes: { puzzle_id: 'mall_cn_ys_1674114355', component_id: 'pz-4WX9Gk6hO4' },
+      pendant: { puzzle_id: 'mall_cn_ys_1674114355', component_id: 'pz-BdWCqpKBaN' },
+    }
+    const goodsList = ref<Record<string, GoodsListItem[]>>({})
+
+    /**
+     * 获取商品列表数据
+     */
+    const getGoodsList = () => {
+      Object.keys(apiParams).forEach(async (key) => {
+        const result = await getShopGoodsList(apiParams[key])
+
+        if (result.retcode !== 0) {
+          ElMessage.error(result.message)
+          return
+        }
+
+        goodsList.value[key] = result.data.list
+      })
+    }
+
+    /**
+     * 跳转商品详情页
+     */
+    const goToGoodsDetail = (item: GoodsListItem) => {
+      router.push({ name: 'goods-id', params: { id: item.goods_id } })
+    }
+
+    getGoodsList()
     return {
       shopConfig,
+      goodsList,
+      toKebabCase,
+      goToGoodsDetail,
     }
   },
 })
@@ -27,49 +67,22 @@ export default defineComponent({
     <div class="banner">
       <img :src="shopConfig.ys.banner" alt="banner">
     </div>
-    <!-- 人气好物 -->
-    <div class="goods-title good-goods" />
-    <section class="goods-list">
-      <div class="list">
-        商品列表
-      </div>
-    </section>
-    <!-- 手办模玩 -->
-    <div class="goods-title garate-kit" />
-    <section class="goods-list">
-      <div class="list">
-        商品列表
-      </div>
-    </section>
-    <!-- 日用百货 -->
-    <div class="goods-title stores" />
-    <section class="goods-list">
-      <div class="list">
-        商品列表
-      </div>
-    </section>
-    <!-- 毛绒玩具 -->
-    <div class="goods-title plush-toys" />
-    <section class="goods-list">
-      <div class="list">
-        商品列表
-      </div>
-    </section>
-    <!-- 服装配饰 -->
-    <div class="goods-title clothes" />
-    <div class="goods-title clothes-banner" />
-    <section class="goods-list">
-      <div class="list">
-        商品列表
-      </div>
-    </section>
-    <!-- 挂件摆件 -->
-    <div class="goods-title pendant" />
-    <section class="goods-list">
-      <div class="list">
-        商品列表
-      </div>
-    </section>
+
+    <template v-for="(item, index) in Object.keys(goodsList)" :key="index">
+      <!-- 把 key 的类名转成短横线类名 -->
+      <div class="goods-title" :class="toKebabCase(item)" />
+      <section class="goods-list">
+        <div class="list">
+          <GoodsCard
+            v-for="goods in goodsList[item]"
+            :key="goods.goods_id"
+            :goods="goods"
+            @click.prevent="goToGoodsDetail(goods)"
+          />
+        </div>
+      </section>
+    </template>
+
     <!-- 主题系列 -->
     <div class="goods-title theme" />
     <div class="goods-title theme-top-banner" />
@@ -124,7 +137,7 @@ export default defineComponent({
     height: 1510PX;
     background-image: url(https://uploadstatic.mihoyo.com/puzzle/upload/puzzle/2023/01/30/085a9361001a3951af5fb1b9a05b296b_6461250552033191225.jpg?x-oss-process=image/format,webp/quality,Q_90);
   }
-  .theme-bottom-banner {
+  .theme-bootom-banner {
     height: 1629.5PX;
     background-image: url(https://uploadstatic.mihoyo.com/puzzle/upload/puzzle/2023/01/30/249fc6898d58514488a816845d9f0ca4_2074995051242932384.jpg?x-oss-process=image/format,webp/quality,Q_90);
   }
@@ -137,9 +150,13 @@ export default defineComponent({
     width: 100%;
     background-color: rgb(162, 205, 255);
     .list {
-      width: 639PX;
+      display: flex;
+      flex-wrap: wrap;
+      width: 954PX;
       margin: 0 auto;
       padding: 22PX;
+      padding-bottom: 0;
+      box-sizing: border-box;
     }
   }
 }

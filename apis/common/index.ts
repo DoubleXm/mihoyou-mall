@@ -48,10 +48,10 @@ export function getCategoryList(shop_code?: string) {
 /**
  * 获取商品页商品列表（目前仅原神中会用到）
  */
-export function getShopGoodsList(datas: { puzzle_id: string; component_id: string }) {
+export function getShopGoodsList(params: { puzzle_id: string; component_id: string }) {
   return http.request<GoodsListResult>({
     method: 'GET',
     url: 'common/homeishop/v1/goods/puzzle_goods_info',
-    params: { datas },
+    params,
   })
 }

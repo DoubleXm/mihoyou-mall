@@ -23,3 +23,15 @@ export const arrayDimensionalTransform = (target: [], n: number) => {
 export const firstLetterCapitl = (str: string) => {
   return str.replace(/^\S/, s => s.toUpperCase())
 }
+
+/**
+ * 转化为短横线命名
+ *
+ * @param str
+ */
+export function toKebabCase(str: string) {
+  return str
+    .replace(/[^a-z0-9]/gi, '-')
+    .replace(/\B([A-Z])/g, '-$1')
+    .toLowerCase()
+}
