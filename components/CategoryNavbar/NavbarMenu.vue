@@ -50,5 +50,15 @@ const emit = defineEmits(['menu-item-click'])
     overflow: auto;
     width: 100%;
   }
+  .el-menu-item {
+    margin-bottom: 4PX;
+    padding: 0 10PX;
+    border-bottom: none;
+    &.is-active {
+      color: var(--el-text-color-primary) !important;
+      border-bottom: none;
+      background-color: transparent !important;
+    }
+  }
 }
 </style>

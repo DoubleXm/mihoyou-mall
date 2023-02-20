@@ -15,10 +15,14 @@ const tagClassName = computed(() => props.goods.tag === 1
 
 <template>
   <div class="goods-card__item">
+    <div v-if="goods.is_sold_out" class="mask" />
     <div
       class="goods-card-img"
+      :class="goods.is_sold_out ? 'sold-out' : ''"
       :style="{ background: `url(${goods.cover_url}) center center no-repeat` }"
-    />
+    >
+      <img v-if="goods.is_sold_out" src="~/assets/images/goods/goods-state-over.webp" alt="sold-out">
+    </div>
     <div class="goods-card-content">
       <div class="goods-content-row">
         <h5>
@@ -36,15 +40,38 @@ const tagClassName = computed(() => props.goods.tag === 1
 
 <style lang="scss">
 .goods-card__item {
+  position: relative;
   width: 207.95PX;
   margin-right: 18PX;
   margin-bottom: 18PX;
   background: var(--el-color-white);
   cursor: pointer;
+
+  .mask {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, .6);
+  }
+
   .goods-card-img {
     width: 100%;
     height: 207.95PX;
     background-size: cover !important;
+    &.sold-out {
+      position: relative;
+      img {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        z-index: 2;
+        width: 78PX;
+        height: 78PX;
+      }
+    }
   }
 
   .goods-card-content {

@@ -7,12 +7,13 @@ import { getCategoryList } from '~/apis/common'
 import 'swiper/css'
 import 'swiper/css/navigation'
 
+const emit = defineEmits<{ (e: 'get-category-list', categoryList: CategoryListResult['data']['list'][]): void }>()
+
 const route = useRoute()
 const router = useRouter()
 
 const categroyList = ref<CategoryListResult['data']['list'][]>([])
 const menuSelectedKey = ref<string>('')
-const currentSelectedMenuItem = ref<CategoryListItem | undefined>(undefined)
 
 // shop_code 参数
 const shopCodeParam = computed(() => {
@@ -21,7 +22,7 @@ const shopCodeParam = computed(() => {
 })
 
 /**
- * 获取分类列表数据
+ * @description  获取分类列表数据
  */
 const queryCategoryList = async () => {
   const result = await getCategoryList(shopCodeParam.value)
@@ -49,30 +50,42 @@ const queryCategoryList = async () => {
 }
 
 /**
- * 菜单点击
+ * @description  菜单点击
  */
 const menuItemClick = (item: CategoryListItem) => {
   // 递归菜单无法获取到对应的信息，需要重新找一遍
   // 目前来看接口一共就返回两层，后续如果增加这里要更改成递归，暂时就这样吧。
-  nextTick(() => {
-    if (menuSelectedKey.value === item.id.toString()) {
-      currentSelectedMenuItem.value = item
-      router.push({ name: 'shop-goods' })
+
+  if (menuSelectedKey.value === item.id.toString()) {
+    if (item.id) {
+      router.push({
+        name: 'shop-goods',
+        query: { categoryId: item?.id },
+      })
     }
     else {
-      currentSelectedMenuItem.value = item.child.find(item => item.id.toString() === menuSelectedKey.value)
-      router.push({ name: 'shop-goods', query: { categoryId: currentSelectedMenuItem.value?.id } })
+      router.push({ name: 'shop-goods' })
     }
-  })
+  }
+  else {
+    const currentSelectedMenuItem = item.child.find(item => item.id.toString() === menuSelectedKey.value)
+    router.push({
+      name: 'shop-goods',
+      query: { categoryId: currentSelectedMenuItem?.id },
+    })
+  }
 }
 
 /**
- * 菜单选择
+ * @description  菜单选择
  */
 const menuSelectHandler = (key: string) => menuSelectedKey.value = key
 
 ;(async () => {
   await queryCategoryList()
+
+  // eslint-disable-next-line vue/custom-event-name-casing
+  emit('get-category-list', categroyList.value)
 })()
 </script>
 
@@ -88,7 +101,6 @@ const menuSelectHandler = (key: string) => menuSelectedKey.value = key
       <div class="swiper-container">
         <ClientOnly>
           <ElMenu
-            router
             mode="horizontal"
             @select="menuSelectHandler"
           >
@@ -126,6 +138,11 @@ const menuSelectHandler = (key: string) => menuSelectedKey.value = key
         .el-menu-item {
           margin-bottom: 4PX;
           padding: 0 10PX;
+          border-bottom: none;
+          &.is-active {
+            color: var(--el-text-color-primary) !important;
+            border-bottom: none;
+          }
         }
 
         .el-sub-menu {

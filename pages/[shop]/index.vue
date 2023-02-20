@@ -12,9 +12,9 @@ import { shopPages } from '~/settings'
 definePageMeta({
   // 路由校验
   validate: async (route) => {
-    return !!shopPages.find(i => i === route.path)
+    return !!shopPages.find(i => route.path.includes(i))
   },
-  // keepalive: true,
+  keepalive: true,
 })
 
 const route = useRoute()

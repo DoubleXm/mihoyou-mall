@@ -29,7 +29,7 @@ export default defineComponent({
     const goodsList = ref<Record<string, GoodsListItem[]>>({})
 
     /**
-     * 获取商品列表数据
+     * @description  获取商品列表数据
      */
     const getGoodsList = () => {
       Object.keys(apiParams).forEach(async (key) => {
@@ -45,7 +45,7 @@ export default defineComponent({
     }
 
     /**
-     * 跳转商品详情页
+     * @description  跳转商品详情页
      */
     const goToGoodsDetail = (item: GoodsListItem) => {
       router.push({ name: 'goods-id', params: { id: item.goods_id } })

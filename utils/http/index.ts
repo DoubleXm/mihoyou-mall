@@ -30,21 +30,21 @@ class AxiosImpl {
   }
 
   /**
-   * 请求拦截
+   * @description  请求拦截
    */
   interceptorsRequest() {
     this.axiosInstance.interceptors.request.use(config => config)
   }
 
   /**
-   * 相应拦截
+   * @description  相应拦截
    */
   interceptorsResponse() {
     this.axiosInstance.interceptors.response.use(res => res.data)
   }
 
   /**
-   * 请求方法
+   * @description  请求方法
    */
   request<T = any>(config: AxiosRequestConfig): Promise<T> {
     return new Promise((resolve, reject) => {

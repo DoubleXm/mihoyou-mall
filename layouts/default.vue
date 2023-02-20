@@ -37,7 +37,7 @@ watchEffect(() => {
 })
 
 /**
- * 获取商品列表数据
+ * @description  获取商品列表数据
  */
 const queryShopList = async () => {
   const result = await getShopList()
@@ -55,7 +55,7 @@ const queryShopList = async () => {
 })()
 
 /**
- * Dropdown
+ * @description  Dropdown
  */
 const menuSelectHandler = (key: string) => {
   menuSelectedItem.value = shopList.value.find(item => item.shop_code === key)

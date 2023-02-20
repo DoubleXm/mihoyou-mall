@@ -20,7 +20,7 @@ defineProps({
 const router = useRouter()
 
 /**
- * 跳转详情页
+ * @description  跳转详情页
  */
 const jumpToDetailPage = (item: SwiperBanner) => {
   if (item.type === 'GOODS_DETAIL')

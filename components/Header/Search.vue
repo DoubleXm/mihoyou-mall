@@ -30,7 +30,7 @@ const shopCodeParam = computed(() => {
 })
 
 /**
- * get 关键词列表
+ * @description  get 关键词列表
  */
 const querySearchHotword = async () => {
   const result = await getSearchHotword(shopCodeParam.value)
@@ -44,7 +44,7 @@ const querySearchHotword = async () => {
 }
 
 /**
- * get 当前关键词
+ * @description  get 当前关键词
  */
 const querySearchSuggestion = async () => {
   const result = await getSearchSuggestion(shopCodeParam.value)
@@ -58,7 +58,7 @@ const querySearchSuggestion = async () => {
 }
 
 /**
- * 搜索
+ * @description  搜索
  */
 const doSearch = () => {
   if (!searchSuggestion.value)
@@ -74,7 +74,7 @@ const doSearch = () => {
 }
 
 /**
- * 删除历史搜索
+ * @description  删除历史搜索
  */
 const removeAllSearchHistory = () => {
   searchSuggestionHistory.value = []
@@ -82,7 +82,7 @@ const removeAllSearchHistory = () => {
 }
 
 /**
- * 单击单个搜索项
+ * @description  单击单个搜索项
  */
 const searchFindItemClick = (text: string) => {
   searchSuggestion.value = text
@@ -95,7 +95,7 @@ const searchFindItemClick = (text: string) => {
 }
 
 /**
- * search input focus handle
+ * @description  search input focus handle
  */
 const searchInputFocus = () => {
   searchHistoryElRef.value!.style.opacity = '1'
@@ -105,7 +105,7 @@ const searchInputFocus = () => {
 }
 
 /**
- * search input blur handle
+ * @description  search input blur handle
  */
 const searchInputBlur = () => {
   // 防止 blur 事件触发的时机过早导致历史弹窗内的 item 点击事件无效
