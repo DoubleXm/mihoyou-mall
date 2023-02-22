@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import type { ShopList, ShopListItem } from '~/apis/common/typing'
 
-import { getShopList } from '~/apis/common'
+import { useUserStore } from '~/store/modules/user'
+import { getShopList, getUserInfo } from '~/apis/common'
 import { shopPages } from '~/settings'
 
 const route = useRoute()
+const userStore = useUserStore()
 
 const shopList = ref<ShopList['data']['list']>([])
 const menuSelectedItem = ref<ShopListItem | undefined>(undefined)
@@ -50,7 +52,15 @@ const queryShopList = async () => {
   shopList.value = result.data.list.map(i => ({ ...i, shop_code: `/${i.shop_code}` }))
 }
 
+/**
+ * @description 获取用户信息
+ */
+const queryUserInfo = async () => {
+  const result = await getUserInfo()
+}
+
 ;(async () => {
+  await queryUserInfo()
   await queryShopList()
 })()
 
@@ -59,6 +69,13 @@ const queryShopList = async () => {
  */
 const menuSelectHandler = (key: string) => {
   menuSelectedItem.value = shopList.value.find(item => item.shop_code === key)
+}
+
+/**
+ * @description Show login dialog
+ */
+const loginDialogShow = () => {
+  userStore.setIsNeedUserLogin(true)
 }
 </script>
 
@@ -104,9 +121,9 @@ const menuSelectHandler = (key: string) => {
         <div class="header-r">
           <HeaderSearch v-if="isShowSearch" />
 
-          <ElAvatar src="/avatar.png" />
+          <ElAvatar src="/avatar.png" @click="loginDialogShow" />
 
-          <div class="goods-card">
+          <div class="goods-card" @click="loginDialogShow">
             <i class="iconfont icon-shop-cart-" />
             <span>购物车</span>
           </div>
@@ -152,6 +169,8 @@ const menuSelectHandler = (key: string) => {
           </div>
         </div>
       </footer>
+
+      <LoginDialog />
     </ElConfigProvider>
   </div>
 </template>
@@ -210,6 +229,7 @@ const menuSelectHandler = (key: string) => {
         margin: 0 20px;
         background-color: var(--el-color-info);
         line-height: 32px;
+        cursor: pointer;
       }
 
       .goods-card {

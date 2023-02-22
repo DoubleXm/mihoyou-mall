@@ -17,7 +17,19 @@ export default defineNuxtConfig({
     // 'element-plus/theme-chalk/src/dark/css-vars.scss', // dark mode
     '~/assets/css/index.scss',
   ],
-  modules: ['@pinia/nuxt'],
+  modules: [
+    [
+      '@pinia/nuxt',
+      {
+        autoImports: [
+          // 自动引入 `usePinia()`
+          'defineStore',
+          // 自动引入 `usePinia()` 并重命名为 `usePiniaStore()`
+          ['defineStore', 'definePiniaStore'],
+        ],
+      },
+    ],
+  ],
   vite: {
     plugins: [
       Components({
@@ -67,6 +79,14 @@ export default defineNuxtConfig({
     devProxy: {
       '/api': {
         target: 'https://api-mall.mihoyogift.com/',
+        changeOrigin: true,
+      },
+      '/account-api': {
+        target: 'https://webapi.account.mihoyogift.com/',
+        changeOrigin: true,
+      },
+      '/passport-api': {
+        target: 'https://passport-api-v4.mihoyogift.com/',
         changeOrigin: true,
       },
     },

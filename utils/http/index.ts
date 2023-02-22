@@ -33,7 +33,12 @@ class AxiosImpl {
    * @description  请求拦截
    */
   interceptorsRequest() {
-    this.axiosInstance.interceptors.request.use(config => config)
+    this.axiosInstance.interceptors.request.use((config) => {
+      if (config.method !== 'GET' && config.url?.includes('Api'))
+        config.headers['Content-Type'] = 'multipart/form-data'
+
+      return config
+    })
   }
 
   /**
@@ -72,7 +77,11 @@ class AxiosImpl {
 }
 
 const http = new AxiosImpl({ baseURL: '/api', timeout: 10000 })
+const accountHttp = new AxiosImpl({ baseURL: '/account-api', timeout: 10000 })
+const passportHttp = new AxiosImpl({ baseURL: '/passport-api', timeout: 10000 })
 
 export {
   http,
+  accountHttp,
+  passportHttp,
 }

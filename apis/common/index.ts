@@ -74,3 +74,13 @@ export function getSpuGoodsList(params?: Partial<SpuGoodsListParams>) {
     params,
   })
 }
+
+/**
+ * @description 获取用户信息
+ */
+export function getUserInfo() {
+  return http.request({
+    method: 'GET',
+    url: 'common/homeishop/v1/user/info',
+  })
+}
