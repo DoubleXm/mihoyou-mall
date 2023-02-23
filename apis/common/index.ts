@@ -6,6 +6,7 @@ import type {
   ShopList,
   SpuGoodsListParams,
   SpuGoodsListResult,
+  UserInfoResult,
 } from './typing'
 
 import { http } from '~/utils/http'
@@ -79,7 +80,7 @@ export function getSpuGoodsList(params?: Partial<SpuGoodsListParams>) {
  * @description 获取用户信息
  */
 export function getUserInfo() {
-  return http.request({
+  return http.request<UserInfoResult>({
     method: 'GET',
     url: 'common/homeishop/v1/user/info',
   })

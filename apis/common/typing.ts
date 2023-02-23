@@ -117,3 +117,18 @@ export interface SpuGoodsListItem {
   // 1: 新品 3: 推荐 0: 正常商品
   tag: 1 | 3 | 0
 }
+
+export interface UserInfoResult {
+  data: {
+    avatar_url: string
+    fans: number
+    gender: number
+    introduce: string
+    is_creator: boolean
+    is_creator_disabled: boolean
+    nickname: string
+    uid: string
+  }
+  message: string
+  retcode: number
+}

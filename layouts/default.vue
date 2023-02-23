@@ -6,6 +6,7 @@ import { getShopList, getUserInfo } from '~/apis/common'
 import { shopPages } from '~/settings'
 
 const route = useRoute()
+const router = useRouter()
 const userStore = useUserStore()
 
 const shopList = ref<ShopList['data']['list']>([])
@@ -57,6 +58,31 @@ const queryShopList = async () => {
  */
 const queryUserInfo = async () => {
   const result = await getUserInfo()
+
+  if (result.retcode !== 0) {
+    ElMessage.error(result.message)
+    return
+  }
+
+  userStore.setUserInfo(result.data)
+}
+
+/**
+ * @description Show login dialog
+ */
+const loginDialogShow = () => {
+  userStore.setIsNeedUserLogin(true)
+}
+
+/**
+ * @description 路由跳转
+ */
+const goToPage = (name: string) => {
+  if (!userStore.userIsLogin) {
+    loginDialogShow()
+    return
+  }
+  router.push({ name })
 }
 
 ;(async () => {
@@ -69,13 +95,6 @@ const queryUserInfo = async () => {
  */
 const menuSelectHandler = (key: string) => {
   menuSelectedItem.value = shopList.value.find(item => item.shop_code === key)
-}
-
-/**
- * @description Show login dialog
- */
-const loginDialogShow = () => {
-  userStore.setIsNeedUserLogin(true)
 }
 </script>
 
@@ -121,9 +140,13 @@ const loginDialogShow = () => {
         <div class="header-r">
           <HeaderSearch v-if="isShowSearch" />
 
-          <ElAvatar src="/avatar.png" @click="loginDialogShow" />
+          <ElAvatar
+            v-loading="!userStore.userIsLogin"
+            :src="userStore.userIsLogin ? userStore.userInfo.avatar_url : '/avatar.png'"
+            @click="goToPage('user-order')"
+          />
 
-          <div class="goods-card" @click="loginDialogShow">
+          <div class="goods-card" @click="goToPage('shop-card')">
             <i class="iconfont icon-shop-cart-" />
             <span>购物车</span>
           </div>
