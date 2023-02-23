@@ -40,3 +40,14 @@ export function postVerifyCodeLogin(data: VerifyCodeLoginParam) {
     data,
   })
 }
+
+/**
+ * @description 手机号登录
+ */
+export function postPhoneLogin(data: any) {
+  return passportHttp.request({
+    method: 'POST',
+    url: 'account/auth/api/webLoginByPassword',
+    data,
+  })
+}

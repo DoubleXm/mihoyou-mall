@@ -3,8 +3,8 @@ import type { FormInstance } from 'element-plus'
 import type { VerifyCodeLoginParam } from '~/apis/user/typing'
 
 import { useUserStore } from '~/store/modules/user'
-import { getVerifyCodeKey, postVerifyCode, postVerifyCodeLogin } from '~/apis/user'
-import { checkPhoneNumber, phoneNumberReg } from '~/utils/validate'
+import { getVerifyCodeKey, postPhoneLogin, postVerifyCode, postVerifyCodeLogin } from '~/apis/user'
+import { checkEmailOrPhoneNumber, checkPhoneNumber, phoneNumberReg } from '~/utils/validate'
 
 const userStore = useUserStore()
 
@@ -13,11 +13,11 @@ const tabActiveName = ref('Register')
 function handleClose() {
   userStore.setIsNeedUserLogin(false)
 }
-/** -------------------------------register */
+/** -------------------------------verifyCode login */
 
 const countDownTimer = ref<NodeJS.Timeout | null>(null)
 const getVerifyCodeText = ref('获取验证码')
-const registerForm = ref<VerifyCodeLoginParam>({
+const verifyCodeForm = ref<VerifyCodeLoginParam>({
   action_type: 'login',
   captcha: '',
   is_bh2: false,
@@ -26,7 +26,7 @@ const registerForm = ref<VerifyCodeLoginParam>({
   t: new Date().getTime(),
   token_type: 6,
 })
-const registerFormRef = ref<FormInstance | null>(null)
+const verifyCodeFormRef = ref<FormInstance | null>(null)
 
 /**
  * @description 获取验证码 key
@@ -45,7 +45,7 @@ async function queryVerifyCodeKey() {
  * @description 获取验证码
  */
 async function queryVerifyCode() {
-  if (!phoneNumberReg.test(registerForm.value.mobile)) {
+  if (!phoneNumberReg.test(verifyCodeForm.value.mobile)) {
     ElMessage.error('手机号格式错误 ~')
     return
   }
@@ -53,9 +53,9 @@ async function queryVerifyCode() {
   const ret = await queryVerifyCodeKey()
 
   const params = {
-    action_type: registerForm.value.action_type,
-    mobile: registerForm.value.mobile,
-    t: registerForm.value.t,
+    action_type: verifyCodeForm.value.action_type,
+    mobile: verifyCodeForm.value.mobile,
+    t: verifyCodeForm.value.t,
     mmt_key: ret?.mmt_data.mmt_key,
     geetest_challenge: ret?.mmt_data.challenge,
     geetest_validate: ret?.mmt_data.mmt_key,
@@ -86,19 +86,60 @@ async function queryVerifyCode() {
  * @description 验证码登录
  */
 function registerLogin() {
-  registerFormRef.value?.validate(async (valid) => {
+  verifyCodeFormRef.value && verifyCodeFormRef.value.validate(async (valid) => {
     if (!valid)
       return
 
-    const result = await postVerifyCodeLogin(registerForm.value)
+    const result = await postVerifyCodeLogin(verifyCodeForm.value)
 
     if (result.retcode !== 0) {
       ElMessage.error(result.message)
       return
     }
 
-    // TODO: 验证码登录走不通，尝试账密登录吧
+    // TODO: 验证码登录走不通
   })
+}
+
+/** -------------------------------phone login */
+
+const loginForm = ref({
+  account: '',
+  password: '',
+})
+const loginFormRef = ref<FormInstance | null>(null)
+
+/**
+ * @description 手机号登录
+ */
+async function phoneLogin() {
+  const result = await postPhoneLogin(loginForm.value)
+
+  ElMessageBox.alert(
+  `
+    真实登录需要图形验证码，目前无法实现，目前模拟登录的方案分为两种：
+
+    1. 米游铺登录成功复制相关 cookie 到这个项目的域下刷新页面即可。
+    2. 本地调试可以打开 /components/LoginDialog.vue 中 135-142 行手动设置后点击登录，刷新页面也可。
+  `,
+  result.message, {
+    confirmButtonText: 'OK',
+    callback: () => {
+      ElMessage({
+        type: 'success',
+        message: '感谢支持！',
+      })
+    },
+  })
+
+  useCookie('_MHYUUID').value = '934884e9-139b-4915-8938-a6ffe6c57196'
+  useCookie('DEVICEFP_SEED_ID').value = '03541cdf5781ad62'
+  useCookie('DEVICEFP_SEED_TIME').value = '1669910928289'
+  useCookie('DEVICEFP').value = '38d7ed567e8ec'
+  useCookie('ltoken').value = 'cHKuVi4Lxem36fdaXLbBJvejoC9ItqsvI51Fk2SE'
+  useCookie('ltuid').value = '372182850'
+  useCookie('cookie_token').value = '7zLcvKyw4R6EgC6epdJHZjSqrzbxTklUnBo2EtXc'
+  useCookie('account_id').value = '372182850'
 }
 
 onBeforeUnmount(() => {
@@ -117,7 +158,7 @@ onBeforeUnmount(() => {
       <div class="login-logo" />
       <ElTabs v-model="tabActiveName">
         <ElTabPane label="验证码登录" name="Register">
-          <ElForm ref="registerFormRef" :model="registerForm">
+          <ElForm ref="verifyCodeForm" :model="verifyCodeForm">
             <ElFormItem
               prop="mobile"
               :rules="[
@@ -125,7 +166,7 @@ onBeforeUnmount(() => {
                 { validator: checkPhoneNumber, trigger: 'blur' },
               ]"
             >
-              <ElInput v-model.number="registerForm.mobile" placeholder="手机号注册/登录" />
+              <ElInput v-model.number="verifyCodeForm.mobile" placeholder="手机号注册/登录" />
             </ElFormItem>
             <ElFormItem
               prop="captcha"
@@ -133,7 +174,7 @@ onBeforeUnmount(() => {
                 { required: true, message: '请输入验证码', trigger: 'blur' },
               ]"
             >
-              <ElInput v-model.number="registerForm.captcha" maxlength="6" placeholder="验证码" />
+              <ElInput v-model.number="verifyCodeForm.captcha" maxlength="6" placeholder="验证码" />
               <div class="register-code" @click="queryVerifyCode">
                 {{ getVerifyCodeText }}
               </div>
@@ -154,7 +195,37 @@ onBeforeUnmount(() => {
         </ElTabPane>
 
         <ElTabPane label="密码登录" name="Login">
-          密码
+          <ElForm ref="loginFormRef" :model="loginForm">
+            <ElFormItem
+              prop="mobile"
+              :rules="[
+                { required: true, message: '请输入手机号码或者邮箱', trigger: 'blur' },
+                { validator: checkEmailOrPhoneNumber, trigger: 'blue' },
+              ]"
+            >
+              <ElInput v-model.number="loginForm.account" placeholder="手机号/邮箱" />
+            </ElFormItem>
+            <ElFormItem
+              prop="captcha"
+              :rules="[
+                { required: true, message: '请输入密码', trigger: 'blur' },
+              ]"
+            >
+              <ElInput v-model.number="loginForm.password" placeholder="密码" />
+            </ElFormItem>
+            <ElButton type="primary" @click="phoneLogin">
+              登录
+            </ElButton>
+          </ElForm>
+          <div class="login-helper">
+            <a href="#">登录遇到问题？</a>
+            <a href="#">立即注册</a>
+          </div>
+          <div class="login-tips">
+            登录即代表您同意并遵守
+            <a href="#">《米哈游通行证用户服务协议》</a>
+            <a href="#">《米哈游通行证用户个人信息及隐私保护政策》</a>
+          </div>
         </ElTabPane>
       </ElTabs>
     </ElDialog>
