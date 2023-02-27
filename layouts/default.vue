@@ -2,21 +2,17 @@
 import type { ShopList, ShopListItem } from '~/apis/common/typing'
 
 import { useUserStore } from '~/store/modules/user'
-import { getShopList, getUserInfo } from '~/apis/common'
+import { useShopStore } from '~/store/modules/shop'
+import { getShopList, getUserInfo, getUserShopCardNum } from '~/apis/common'
 import { shopPages } from '~/settings'
 
 const route = useRoute()
 const router = useRouter()
 const userStore = useUserStore()
+const shopStore = useShopStore()
 
 const shopList = ref<ShopList['data']['list']>([])
 const menuSelectedItem = ref<ShopListItem | undefined>(undefined)
-// const footerAuthInfo = reactive([
-//   { src: import('~/assets/images/footer-auth/license.webp'), alt: '电子营业执照' },
-//   { src: '~/assets/images/footer-auth/report-1.webp', alt: '上海市互联网违法和不良信息举报中心' },
-//   { src: '~/assets/images/footer-auth/report-2.webp', alt: '上海市互联网违法和不良信息举报中心' },
-//   { src: '~/assets/images/footer-auth/report-3.webp', alt: '违法和不良信息举报中心' },
-// ])
 const footerLinks = reactive([
   { link: '/', target: '_self', text: '首页', className: '' },
   { link: '#', target: '_blank', text: '隐私政策', className: 'protocol' },
@@ -85,9 +81,43 @@ const goToPage = (name: string) => {
   router.push({ name })
 }
 
+/**
+ * @description 登录后 avatar dropdown 点击
+ */
+const userAvatarDropdownCommand = (command: string) => {
+  switch (command) {
+    case 'userCenter':
+      goToPage('user-order')
+      break
+    case 'userLogout':
+      /**
+       * 1, 清除 cookie
+       * 2, 清空 shopStore
+       */
+      ElMessage.warning('该功能未实现~~~')
+      break
+  }
+}
+
+const shopCardNum = ref(0)
+/**
+ * @description 获取登录后用户购物车商品数量
+ */
+const queryUserShopCardNum = async () => {
+  const result = await getUserShopCardNum()
+
+  if (result.retcode !== 0) {
+    ElMessage.error(result.message)
+    return
+  }
+  shopCardNum.value = result.data.num
+}
+
 ;(async () => {
   await queryUserInfo()
   await queryShopList()
+  if (userStore.userIsLogin)
+    await queryUserShopCardNum()
 })()
 
 /**
@@ -95,6 +125,8 @@ const goToPage = (name: string) => {
  */
 const menuSelectHandler = (key: string) => {
   menuSelectedItem.value = shopList.value.find(item => item.shop_code === key)
+  // 还是要设置 store 不然后面是真的恶心。
+  shopStore.setShopInfo(menuSelectedItem.value!)
 }
 </script>
 
@@ -141,14 +173,34 @@ const menuSelectHandler = (key: string) => {
           <HeaderSearch v-if="isShowSearch" />
 
           <ElAvatar
-            v-loading="!userStore.userIsLogin"
-            :src="userStore.userIsLogin ? userStore.userInfo.avatar_url : '/avatar.png'"
+            v-if="!userStore.userIsLogin"
+            src="/avatar.png"
             @click="goToPage('user-order')"
           />
+
+          <ClientOnly v-else>
+            <ElDropdown @command="userAvatarDropdownCommand">
+              <ElAvatar
+                :src="userStore.userIsLogin ? userStore.userInfo.avatar_url : '/avatar.png'"
+                @click="goToPage('user-order')"
+              />
+              <template #dropdown>
+                <ElDropdownMenu>
+                  <ElDropdownItem command="userCenter">
+                    <i class="iconfont icon-gerenzhongxin" /> 个人中心
+                  </ElDropdownItem>
+                  <ElDropdownItem command="userLogout">
+                    <i class="iconfont icon-tuichudenglu" /> 退出登录
+                  </ElDropdownItem>
+                </ElDropdownMenu>
+              </template>
+            </ElDropdown>
+          </ClientOnly>
 
           <div class="goods-card" @click="goToPage('shop-card')">
             <i class="iconfont icon-shop-cart-" />
             <span>购物车</span>
+            <span v-if="userStore.userIsLogin && shopCardNum" class="red-dot">{{ shopCardNum }}</span>
           </div>
         </div>
       </header>
@@ -266,6 +318,19 @@ const menuSelectHandler = (key: string) => {
         &:hover {
           cursor: pointer;
           color: var(--el-color-primary);
+        }
+        .red-dot {
+          display: inline-block;
+          height: 16PX;
+          width: 16PX;
+          margin-left: 4PX;
+          border-radius: 50%;
+          background-color: var(--el-color-primary);
+          color: var(--el-color-white);
+          line-height: 16PX;
+          text-align: center;
+          font-size: 12PX;
+          vertical-align: bottom;
         }
       }
     }

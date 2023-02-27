@@ -2,12 +2,14 @@
 import type { ElInput } from 'element-plus'
 import type { SearchHotwordResult } from '~/apis/common/typing'
 
+import { useShopStore } from '~/store/modules/shop'
 import { getSearchHotword, getSearchSuggestion } from '~/apis/common'
 import { storage } from '~/utils/storage'
 import { STORAGE_KEY } from '~/settings/enmu'
 import { shopPages } from '~/settings'
 
 const route = useRoute()
+const shopStore = useShopStore()
 
 const searchHotword = ref<SearchHotwordResult['data']['list']>([])
 const searchSuggestion = ref('')
@@ -23,17 +25,11 @@ const searchSuggestionHistoryIsShow = computed(() => !!searchSuggestionHistory.v
 const isDoSearch = computed(() =>
   shopPages.includes(route.path) || route.path === '/' || shopPages.map(i => `${i}/goods`.includes(route.path)))
 
-const shopCodeParam = computed(() => {
-  const key = route.path.match(/[^\/][^$\/]+/) as RegExpMatchArray
-
-  return isDoSearch && Array.isArray(key) ? key[0] : ''
-})
-
 /**
  * @description  get 关键词列表
  */
 const querySearchHotword = async () => {
-  const result = await getSearchHotword(shopCodeParam.value)
+  const result = await getSearchHotword(shopStore.shopCode)
 
   if (result.retcode !== 0) {
     ElMessage.error(result.message)
@@ -47,7 +43,7 @@ const querySearchHotword = async () => {
  * @description  get 当前关键词
  */
 const querySearchSuggestion = async () => {
-  const result = await getSearchSuggestion(shopCodeParam.value)
+  const result = await getSearchSuggestion(shopStore.shopCode)
 
   if (result.retcode !== 0) {
     ElMessage.error(result.message)
@@ -118,7 +114,7 @@ const searchInputBlur = () => {
 }
 
 watch(
-  [() => isDoSearch.value, () => shopCodeParam.value],
+  [() => isDoSearch.value, () => shopStore.shopCode],
   async () => {
     await querySearchSuggestion()
     await querySearchHotword()

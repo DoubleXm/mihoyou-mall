@@ -85,3 +85,17 @@ export function getUserInfo() {
     url: 'common/homeishop/v1/user/info',
   })
 }
+
+/**
+ * @description 获取登录的用户购物车商品数量
+ */
+export function getUserShopCardNum() {
+  return http.request<{
+    data: { num: number }
+    message: string
+    retcode: number
+  }>({
+    method: 'GET',
+    url: 'common/homeishop/v1/shop_car/get_shop_car_goods_num',
+  })
+}

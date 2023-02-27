@@ -132,14 +132,10 @@ async function phoneLogin() {
     },
   })
 
-  useCookie('_MHYUUID').value = '934884e9-139b-4915-8938-a6ffe6c57196'
-  useCookie('DEVICEFP_SEED_ID').value = '03541cdf5781ad62'
-  useCookie('DEVICEFP_SEED_TIME').value = '1669910928289'
-  useCookie('DEVICEFP').value = '38d7ed567e8ec'
-  useCookie('ltoken').value = 'cHKuVi4Lxem36fdaXLbBJvejoC9ItqsvI51Fk2SE'
-  useCookie('ltuid').value = '372182850'
-  useCookie('cookie_token').value = '7zLcvKyw4R6EgC6epdJHZjSqrzbxTklUnBo2EtXc'
-  useCookie('account_id').value = '372182850'
+  useCookie('ltoken').value = 'EdZrfTHaiacuEOONcFMd2At9zcxyXqJDmPI71Y5r'
+  useCookie('ltuid').value = '357733426'
+  useCookie('cookie_token').value = 'zCByqxXxQvvLjNna9zFQDQQUTs94940fQD6G2EkQ'
+  useCookie('account_id').value = '357733426'
 }
 
 onBeforeUnmount(() => {
