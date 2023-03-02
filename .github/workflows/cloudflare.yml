@@ -33,7 +33,7 @@ jobs:
 
       - name: Install Dependencies
         if: steps.cache.outputs.cache-hit != 'true'
-        run: pnpm install --shamefully-hoist
+        run: npm install pnpm -g && pnpm install --shamefully-hoist
 
       - name: Build
         run: pnpm run build
