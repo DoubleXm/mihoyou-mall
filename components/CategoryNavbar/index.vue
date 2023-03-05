@@ -3,29 +3,24 @@ import type { Swiper } from 'swiper/types'
 import { Navigation } from 'swiper'
 import type { CategoryListItem, CategoryListResult } from '~/apis/common/typing'
 
+import { useShopStore } from '~/store/modules/shop'
 import { getCategoryList } from '~/apis/common'
 import 'swiper/css'
 import 'swiper/css/navigation'
 
 const emit = defineEmits<{ (e: 'get-category-list', categoryList: CategoryListResult['data']['list'][]): void }>()
 
-const route = useRoute()
 const router = useRouter()
+const shopStore = useShopStore()
 
 const categroyList = ref<CategoryListResult['data']['list'][]>([])
 const menuSelectedKey = ref<string>('')
-
-// shop_code 参数
-const shopCodeParam = computed(() => {
-  const key = route.path.match(/[^\/][^$\/]+/) as RegExpMatchArray
-  return Array.isArray(key) ? key[0] : ''
-})
 
 /**
  * @description  获取分类列表数据
  */
 const queryCategoryList = async () => {
-  const result = await getCategoryList(shopCodeParam.value)
+  const result = await getCategoryList(shopStore.shopCode)
 
   if (result.retcode !== 0) {
     ElMessage.error(result.message)
@@ -60,17 +55,19 @@ const menuItemClick = (item: CategoryListItem) => {
     if (item.id) {
       router.push({
         name: 'shop-goods',
+        params: { shop: shopStore.shopCode },
         query: { categoryId: item?.id },
       })
     }
     else {
-      router.push({ name: 'shop-goods' })
+      router.push({ name: 'shop-goods', params: { shop: shopStore.shopCode } })
     }
   }
   else {
     const currentSelectedMenuItem = item.child.find(item => item.id.toString() === menuSelectedKey.value)
     router.push({
       name: 'shop-goods',
+      params: { shop: shopStore.shopCode },
       query: { categoryId: currentSelectedMenuItem?.id },
     })
   }

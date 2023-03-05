@@ -62,6 +62,8 @@ onMounted(async () => {
 </script>
 
 <template>
+  <CategoryNavbar />
+
   <div class="goods-detail__page">
     <div class="sku-selector">
       <div class="image-selector">
@@ -73,6 +75,7 @@ onMounted(async () => {
             :preview-src-list="goodsDetail?.goods.detail.banner_url"
             :initial-index="imagePreviewIndex"
             fit="cover"
+            lazy
           />
         </div>
 
@@ -107,6 +110,15 @@ onMounted(async () => {
         height: 486PX;
         border: 1PX solid var(--el-border-color);
         cursor: pointer;
+        .el-image-viewer__canvas {
+          .el-image-viewer__img {
+            max-height: 90% !important;
+            border-radius: 8PX;
+          }
+        }
+        .el-image-viewer__btn {
+          bottom: 6% !important;
+        }
       }
     }
     .reserve-images {
