@@ -134,7 +134,7 @@ async function phoneLogin() {
 
   useCookie('ltoken').value = 'EdZrfTHaiacuEOONcFMd2At9zcxyXqJDmPI71Y5r'
   useCookie('ltuid').value = '357733426'
-  useCookie('cookie_token').value = 'zCByqxXxQvvLjNna9zFQDQQUTs94940fQD6G2EkQ'
+  useCookie('cookie_token').value = 'yDhg57Vi5Z9cjHbmCmCouxKet1r0d9PAMXe3JrAp'
   useCookie('account_id').value = '357733426'
 }
 

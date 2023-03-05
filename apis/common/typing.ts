@@ -132,3 +132,98 @@ export interface UserInfoResult {
   message: string
   retcode: number
 }
+
+/**
+ * 商品详情
+ */
+export interface GoodsDetail extends CommonResult {
+  data: {
+    goods: {
+      account_id: string
+      creator: null
+      detail: {
+        banner_url: string[]
+        cover_url: string
+        desc: string
+        goods_id: string
+        goods_kind: number
+        goods_type: number
+        have_sku: boolean
+        is_gift: boolean
+        main_url: string[]
+        market_price: number
+        name: string
+        new: boolean
+        price: number
+        product_category: string
+        product_material: string
+        product_notes: string
+        product_producer: string
+        product_size: string
+        quota: number
+        remaining_time: number
+        sale_attrs: {
+          name: string
+          content: {
+            img_url: string
+            is_chose: boolean
+            key: string
+            text: string
+          }[]
+          is_open: boolean
+          key: string
+        }
+        sale_time: number
+        shop: {
+          cert: boolean
+          icon: string
+          icon_goods_avatar: string
+          icon_m_goods: string
+          official: boolean
+          shop_code: string
+          shop_name: string
+        }
+        shop_code: string
+        skus: {
+          [key: string]: {
+            attr: string
+            cover_url: string
+            id: number
+            market_price: number
+            price: number
+            sale_attr1_key: string
+            sale_attr1_val: string
+            sale_attr2_key: string
+            sale_attr2_val: string
+          }
+        }
+        tag: number
+        status: number
+      }
+      goods_count: number
+      notices: {
+        bottom: {
+          image_urls: string[]
+        }
+        top: {
+          image_urls: string[]
+        }
+      }
+      quantity: {
+        have_sku: boolean
+        sku_quantities: {
+          [key: string]: number
+        }
+        sold_num: number
+        spu_quantity: number
+      }
+    }
+    promotion: {
+      coupons: any[]
+      free_shipping_activity: null
+      gift_activities: any[]
+      presale_activity: null
+      server_time: number
+    }
+  }
+}

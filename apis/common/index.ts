@@ -1,5 +1,6 @@
 import type {
   CategoryListResult,
+  GoodsDetail,
   GoodsListResult,
   SearchHotwordResult,
   SearchSuggestionResult,
@@ -97,5 +98,18 @@ export function getUserShopCardNum() {
   }>({
     method: 'GET',
     url: 'common/homeishop/v1/shop_car/get_shop_car_goods_num',
+  })
+}
+
+/**
+ * @description 获取商品详情
+ */
+export function getGoodsDetail(goods_id: string) {
+  return http.request<GoodsDetail>({
+    method: 'GET',
+    url: 'common/homeishop/v1/goods/detail',
+    params: {
+      goods_id,
+    },
   })
 }
