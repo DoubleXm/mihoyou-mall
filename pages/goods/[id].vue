@@ -65,33 +65,39 @@ onMounted(async () => {
   <CategoryNavbar />
 
   <div class="goods-detail__page">
-    <div class="sku-selector">
-      <div class="image-selector">
-        <div class="cover_image">
-          <ElImage
-            ref="elImageRef"
-            style="width: 100%; height: 100%;"
-            :src="coverUrl ? coverUrl : goodsDetail?.goods.detail.cover_url"
-            :preview-src-list="goodsDetail?.goods.detail.banner_url"
-            :initial-index="imagePreviewIndex"
-            fit="cover"
-            lazy
-          />
-        </div>
+    <template v-if="goodsDetail">
+      <div class="sku-selector">
+        <div class="image-selector">
+          <div class="cover_image">
+            <ElImage
+              ref="elImageRef"
+              style="width: 100%; height: 100%;"
+              :src="coverUrl ? coverUrl : goodsDetail?.goods.detail.cover_url"
+              :preview-src-list="goodsDetail?.goods.detail.banner_url"
+              :initial-index="imagePreviewIndex"
+              fit="cover"
+              lazy
+            />
+          </div>
 
-        <div class="reserve-images">
-          <div
-            v-for="(item, index) in goodsDetail?.goods.detail.banner_url"
-            :key="index"
-            class="image-item"
-            :data-src="item"
-            @mouseenter="reserveImageMouseenter"
-          >
-            <img :src="item" :alt="item">
+          <div class="reserve-images">
+            <div
+              v-for="(item, index) in goodsDetail?.goods.detail.banner_url"
+              :key="index"
+              class="image-item"
+              :data-src="item"
+              @mouseenter="reserveImageMouseenter"
+            >
+              <img :src="item" :alt="item">
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </template>
+
+    <template v-else>
+      <GoodsLoading />
+    </template>
   </div>
 </template>
 

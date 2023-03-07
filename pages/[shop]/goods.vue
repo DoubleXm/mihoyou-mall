@@ -228,13 +228,7 @@ function goToGoodsDetail(goods: SpuGoodsListItem) {
           </template>
         </section>
         <template v-else>
-          <div class="loading-container" style="width: 100%; height: 400PX; margin-top: 100PX; text-align: center;">
-            <img
-              height="200"
-              width="200"
-              src="~/assets/images/goods/goods-loading.gif" alt="loading"
-            >
-          </div>
+          <GoodsLoading />
         </template>
 
         <div class="paging">
