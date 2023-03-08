@@ -1,6 +1,8 @@
 import type {
   CategoryListResult,
   GoodsDetail,
+  GoodsDetailCouponReceive,
+  GoodsDetailCouponResult,
   GoodsListResult,
   SearchHotwordResult,
   SearchSuggestionResult,
@@ -110,6 +112,32 @@ export function getGoodsDetail(goods_id: string) {
     url: 'common/homeishop/v1/goods/detail',
     params: {
       goods_id,
+    },
+  })
+}
+
+/**
+ * @description 获取商品详情中优惠券列表
+ */
+export function getGoodsDetialCoupons(goods_id: string) {
+  return http.request<GoodsDetailCouponResult>({
+    method: 'GET',
+    url: 'common/homeishop/v1/coupon/goods_detail_coupon',
+    params: {
+      goods_id,
+    },
+  })
+}
+
+/**
+ * @description 商品详情中优惠券领取
+ */
+export function postGoodsDetailCouponRective(coupon_id: string) {
+  return http.request<GoodsDetailCouponReceive>({
+    method: 'POST',
+    url: 'common/homeishop/v1/coupon/receive_coupon',
+    data: {
+      coupon_id,
     },
   })
 }

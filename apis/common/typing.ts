@@ -172,7 +172,7 @@ export interface GoodsDetail extends CommonResult {
           }[]
           is_open: boolean
           key: string
-        }
+        }[]
         sale_time: number
         shop: {
           cert: boolean
@@ -225,5 +225,56 @@ export interface GoodsDetail extends CommonResult {
       presale_activity: null
       server_time: number
     }
+  }
+}
+
+/**
+ * 商品详情优惠券列表
+ */
+export interface GoodsDetailCouponResult extends CommonResult {
+  data: {
+    received: (GoodsDetailCouponResultCommonItem & GoodsDetailCouponReceived)[]
+    unreceive: (GoodsDetailCouponResultCommonItem & GoodsDetailCouponUnreceive)[]
+  }
+}
+
+export interface GoodsDetailCouponResultCommonItem {
+  apply_category: any[]
+  apply_end_time: number
+  apply_goods: {
+    id: string
+    name: string
+  }[]
+  apply_goods_scene: number
+  apply_scope_desc: string
+  apply_start_time: number
+  coupon_id: string
+  deduction: number
+  jump_type: number
+  name: string
+  received: number
+  server_time: number
+  shop_code: string
+  threshold: number
+}
+
+export interface GoodsDetailCouponReceived {
+  instance_id: string
+  receive_time: number
+  unavaliable_reason: string
+  use_time: number
+}
+export interface GoodsDetailCouponUnreceive {
+  dist_end_time: number
+  dist_start_time: number
+  apply_interval_after_dist: number
+  apply_time_type: number
+  threshold: number
+  stock: number
+}
+
+export interface GoodsDetailCouponReceive extends CommonResult {
+  data: {
+    instance_id: string
   }
 }
