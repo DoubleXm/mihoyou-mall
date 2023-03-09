@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import type { GoodsDetail, GoodsDetailCouponResult } from '~/apis/common/typing'
 
+import { useShopStore } from '~/store/modules/shop'
 import { getGoodsDetail, getGoodsDetialCoupons, postGoodsDetailCouponRective } from '~/apis/common'
 
 const route = useRoute()
+const shopStore = useShopStore()
 
 const goodsId = route.params.id as string
 
@@ -155,7 +157,7 @@ onMounted(async () => {
             <div class="price">
               <span class="price-prefix">￥</span>{{ goodsDetail.goods.detail.price / 100 }}
             </div>
-            <div class="coupon">
+            <div v-if="couponList?.length" class="coupon">
               <label class="label">优惠</label>
               <ElPopover
                 placement="bottom"
@@ -202,7 +204,7 @@ onMounted(async () => {
           <div class="counter">
             <label class="label">数量</label>
             <ElInputNumber size="default" />
-            <span>库存 1610 件</span>
+            <span class="stock">库存 1610 件</span>
           </div>
 
           <div class="btns">
@@ -215,6 +217,34 @@ onMounted(async () => {
           </div>
         </div>
       </div>
+
+      <div class="line" />
+      <section class="goods-detial-description">
+        <NuxtLink class="shop-desc" :to="{ name: 'shop-goods', params: { shop: shopStore.shopCode } }">
+          <div class="shop-desc-l">
+            <ElAvatar :src="goodsDetail.goods.detail.shop.icon" />
+            <div class="shop-info">
+              <h3>{{ goodsDetail.goods.detail.shop.shop_name }}</h3>
+              <span>{{ goodsDetail.goods.goods_count }}件官方商品在售</span>
+            </div>
+          </div>
+          <div class="shop-desc-r">
+            查看全部
+            <i class="iconfont icon-arrow-down-filling" />
+          </div>
+        </NuxtLink>
+
+        <div class="goods-detial-img">
+          <!-- <img v-for="item in goodsDetail.goods.notices.top.image_urls" :key="item" src="item"> -->
+          <img v-for="item in goodsDetail.goods.detail.main_url" :key="item" :src="item">
+          <img v-for="item in goodsDetail.goods.notices.bottom.image_urls" :key="item" :src="item">
+        </div>
+
+        <div class="goods-detail-cert">
+          <label>相关资质：</label>
+          <a href="#">点击查看</a>
+        </div>
+      </section>
     </template>
 
     <template v-else>
@@ -371,13 +401,13 @@ onMounted(async () => {
           }
           .el-input__wrapper {
             width: 50PX;
-            padding: 0 44PX;
+            padding: 2PX 34PX;
             &.is-focus {
               box-shadow: 0 0 0 1px var(--el-input-border-color, var(--el-border-color)) inset;
             }
           }
         }
-        span {
+        .stock {
           padding-left: 10PX;
           color: var(--el-color-info);
         }
@@ -391,6 +421,7 @@ onMounted(async () => {
           height: 56PX;
           font-size: 18PX;
           &.is-plain {
+            color: var(--el-color-primary);
             background-color: var(--el-color-white);
             &:hover {
               color: var(--el-color-primary);
@@ -400,6 +431,74 @@ onMounted(async () => {
             }
           }
         }
+      }
+    }
+  }
+
+  .line {
+    margin: 40PX;
+    height: 2PX;
+    background-color: var(--el-color-info-light-8);
+  }
+  .goods-detial-description {
+    width: 802PX;
+    margin: 0 auto;
+    .shop-desc {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 102PX;
+      padding: 0 20PX;
+      background: url(~/assets/images/goods/shop-bg.webp) center no-repeat;
+      background-size: cover;
+      text-decoration: none;
+      box-sizing: border-box;
+      color: var(--el-color-info);
+      .el-avatar {
+        width: 62PX;
+        height: 62PX;
+        background-color: var(--el-color-white);
+      }
+      .shop-desc-l {
+        display: flex;
+        align-items: center;
+        .shop-info {
+          margin-left: 20PX;
+          h3 {
+            margin-bottom: 8PX;
+            font-size: 18PX;
+            line-height: 24PX;
+            color: var(--el-color-black);
+          }
+        }
+      }
+      .shop-desc-r {
+        color: var(--el-color-black);
+        .icon-arrow-down-filling {
+          transform: rotate(-90deg) !important;
+        }
+      }
+    }
+
+    .goods-detial-img {
+      margin-top: 20PX;
+      img {
+        display: block;
+        width: 100%;
+        height: auto;
+        margin: 0 auto;
+      }
+    }
+
+    .goods-detail-cert {
+      padding: 20PX 0;
+      text-align: center;
+      label {
+        color: var(--el-color-info);
+      }
+      a {
+        color: var(--el-color-primary);
+        text-decoration: none;
       }
     }
   }
