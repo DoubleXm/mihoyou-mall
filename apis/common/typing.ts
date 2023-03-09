@@ -228,6 +228,13 @@ export interface GoodsDetail extends CommonResult {
   }
 }
 
+export interface GoodsDetailSKU {
+  img_url: string
+  is_chose: boolean
+  key: string
+  text: string
+}
+
 /**
  * 商品详情优惠券列表
  */

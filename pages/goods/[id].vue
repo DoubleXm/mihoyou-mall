@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { GoodsDetail, GoodsDetailCouponResult } from '~/apis/common/typing'
+import type { GoodsDetail, GoodsDetailCouponResult, GoodsDetailSKU } from '~/apis/common/typing'
 
 import { useShopStore } from '~/store/modules/shop'
 import { getGoodsDetail, getGoodsDetialCoupons, postGoodsDetailCouponRective } from '~/apis/common'
@@ -11,7 +11,22 @@ const goodsId = route.params.id as string
 
 const goodsDetail = ref<GoodsDetail['data'] | null>(null)
 const goodsCoupons = ref<GoodsDetailCouponResult['data'] | null>(null)
+// 鼠标经过时的 coverUrl
 const coverUrl = ref<string | null>(null)
+// 当前点击的 sku 对应的 coverUrl
+const currentCoverUrl = ref<string | null>(null)
+// 当前点击的 sku 详情
+const currentClickSkuInfo = ref<GoodsDetailSKU | null>()
+
+// 当前预览的图片
+const currentCoverImg = computed(() => {
+  if (currentCoverUrl.value)
+    return currentCoverUrl.value
+  else if (coverUrl.value)
+    return coverUrl.value
+  else
+    return goodsDetail.value?.goods.detail.cover_url
+})
 
 // 预览地址的 index
 const imagePreviewIndex = computed(() => {
@@ -42,6 +57,15 @@ const couponList = computed(() => {
   if (goodsDetail.value) {
     return goodsDetail.value.promotion.coupons.map(i =>
       ({ coupon_id: i.coupon_id, name: i.name.replace(/^【.*】/, '') }))
+  }
+})
+
+// 总库存
+const stockTotal = computed(() => {
+  if (goodsDetail.value?.goods.quantity.sku_quantities) {
+    const skus = Object.values(goodsDetail.value?.goods.quantity.sku_quantities)
+
+    return skus.reduce((pre, next) => pre + next)
   }
 })
 
@@ -94,6 +118,9 @@ const reserveImageMouseenter = (event: MouseEvent) => {
   const target = event.target as HTMLElement
 
   coverUrl.value = target.getAttribute('data-src')
+  // 每次手动选择后清空点击选择的结果
+  currentCoverUrl.value = ''
+
   const imagesEle = document.querySelectorAll('.image-item')
 
   if (imagesEle) {
@@ -102,6 +129,16 @@ const reserveImageMouseenter = (event: MouseEvent) => {
     })
   }
   target.style.setProperty('border', '4PX solid var(--el-color-primary)')
+}
+
+/**
+ * @description 点击商品 SKU
+ */
+const skuCheckHandle = (specs: GoodsDetailSKU) => {
+  currentClickSkuInfo.value = specs
+
+  if (goodsDetail.value?.goods.detail.skus[specs.key])
+    currentCoverUrl.value = goodsDetail.value.goods.detail.skus[specs.key].cover_url
 }
 
 onMounted(async () => {
@@ -126,8 +163,8 @@ onMounted(async () => {
             <ElImage
               ref="elImageRef"
               style="width: 100%; height: 100%;"
-              :src="coverUrl ? coverUrl : goodsDetail?.goods.detail.cover_url"
-              :preview-src-list="goodsDetail?.goods.detail.banner_url"
+              :src="currentCoverImg"
+              :preview-src-list="currentCoverUrl ? [currentCoverUrl] : goodsDetail?.goods.detail.banner_url"
               :initial-index="imagePreviewIndex"
               fit="cover"
               lazy
@@ -197,14 +234,27 @@ onMounted(async () => {
           <div v-for="item in goodsDetail.goods.detail.sale_attrs" :key="item.name" class="specs">
             <label class="label">{{ item.name }}</label>
             <div class="specs-list">
-              <label v-for="specs in item.content" :key="specs.key" class="specs-item">{{ specs.text }}</label>
+              <label
+                v-for="specs in item.content"
+                :key="specs.key"
+                class="specs-item"
+                :class="!goodsDetail.goods.quantity.sku_quantities[specs.key] ? 'specs-item__disable' : ''"
+                @click="skuCheckHandle(specs)"
+              >
+                {{ specs.text }}
+              </label>
             </div>
           </div>
 
           <div class="counter">
             <label class="label">数量</label>
             <ElInputNumber size="default" />
-            <span class="stock">库存 1610 件</span>
+            <template v-if="currentClickSkuInfo?.key">
+              <span class="stock">库存 {{ goodsDetail.goods.quantity.sku_quantities[currentClickSkuInfo.key] }} 件</span>
+            </template>
+            <template v-else>
+              <span class="stock">库存 {{ stockTotal }} 件</span>
+            </template>
           </div>
 
           <div class="btns">
@@ -219,6 +269,7 @@ onMounted(async () => {
       </div>
 
       <div class="line" />
+      <!-- 商品详情介绍 -->
       <section class="goods-detial-description">
         <NuxtLink class="shop-desc" :to="{ name: 'shop-goods', params: { shop: shopStore.shopCode } }">
           <div class="shop-desc-l">
@@ -387,6 +438,11 @@ onMounted(async () => {
             border: 1PX solid var(--el-color-info);
             border-radius: 4PX;
             cursor: pointer;
+            &.specs-item__disable {
+              border: 1PX solid var(--el-color-info-light-9);
+              color: var(--el-color-info-light-7);
+              cursor: no-drop;
+            }
           }
         }
       }
