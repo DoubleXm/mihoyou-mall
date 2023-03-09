@@ -33,11 +33,11 @@ const tabList = ref<TabItem[]>([
 ])
 
 const fiterGoodsListParam = ref<SpuGoodsListParams>({
-  shop_code: shopName.value ? shopName.value : '',
+  shop_code: '',
   hide_sold_out: false,
   show_sale_type: 1,
-  category_id: categoryId.value ? categoryId.value : '',
-  order_by: order.value ? order.value : '',
+  category_id: '',
+  order_by: '',
   page: 1,
   limit: 40,
 })
@@ -45,7 +45,7 @@ const goodsList = ref<SpuGoodsListItem[]>([])
 const goodsListCount = ref(0)
 
 watch(
-  () => route.query.categoryId,
+  () => route,
   () => {
     // 重置数据在获取
     breadcrumbList.value = []
@@ -53,6 +53,7 @@ watch(
 
     getSpuGoodsList()
   },
+  { deep: true },
 )
 
 onMounted(() => {
@@ -149,6 +150,10 @@ async function queryOrderGoodsList(tabItem: TabItem) {
  * @description 查询商品数据
  */
 async function queryGoodsList() {
+  fiterGoodsListParam.value.category_id = categoryId.value
+  fiterGoodsListParam.value.order_by = order.value
+  fiterGoodsListParam.value.shop_code = shopName.value
+
   const result = await getSpuGoodsList(fiterGoodsListParam.value)
 
   if (result.retcode !== 0) {
