@@ -1,16 +1,20 @@
 <script setup lang="ts">
-import type { GoodsDetail, GoodsDetailCouponResult, GoodsDetailSKU } from '~/apis/common/typing'
+import type { AddGoodsToCardPayload, GoodsDetail, GoodsDetailCouponResult, GoodsDetailSKU } from '~/apis/common/typing'
 
 import { useShopStore } from '~/store/modules/shop'
-import { getGoodsDetail, getGoodsDetialCoupons, postGoodsDetailCouponRective } from '~/apis/common'
+import { useUserStore } from '~/store/modules/user'
+import { getGoodsDetail, getGoodsDetialCoupons, postGoodsDetailCouponRective, postGoodsToShopCard } from '~/apis/common'
 
 const route = useRoute()
+const router = useRouter()
 const shopStore = useShopStore()
+const userStore = useUserStore()
 
 const goodsId = route.params.id as string
 
 const goodsDetail = ref<GoodsDetail['data'] | null>(null)
 const goodsCoupons = ref<GoodsDetailCouponResult['data'] | null>(null)
+const goodsNum = ref(1)
 // 鼠标经过时的 coverUrl
 const coverUrl = ref<string | null>(null)
 // 当前点击的 sku 对应的 coverUrl
@@ -69,6 +73,11 @@ const stockTotal = computed(() => {
   }
 })
 
+// 最大购买商品数量
+const isShowBuyMaxGoods = computed(() => {
+  return !!(goodsNum.value > 50)
+})
+
 /**
  * @description 获取商品详情
  */
@@ -98,7 +107,7 @@ const queryGoodsDetailCoupons = async () => {
 }
 
 /**
- * @description 商品相中中优惠券领取
+ * @description 商品详情中优惠券领取
  */
 const goodsDetailCouponRective = async (couponId: string) => {
   const result = await postGoodsDetailCouponRective(couponId)
@@ -135,10 +144,65 @@ const reserveImageMouseenter = (event: MouseEvent) => {
  * @description 点击商品 SKU
  */
 const skuCheckHandle = (specs: GoodsDetailSKU) => {
-  currentClickSkuInfo.value = specs
+  // 禁用的点击无效
+  if (!goodsDetail.value?.goods.quantity.sku_quantities[specs.key])
+    return
 
+  // 左侧图片的切换
+  currentClickSkuInfo.value = specs
   if (goodsDetail.value?.goods.detail.skus[specs.key])
     currentCoverUrl.value = goodsDetail.value.goods.detail.skus[specs.key].cover_url
+
+  // 设置样式
+  const specsItemEle = document.querySelector(`.specs-item.${specs.key}`) as HTMLLabelElement
+  const specsEle = document.querySelectorAll('.specs-item') as NodeListOf<HTMLLabelElement>
+
+  specsEle.forEach(i => i.classList.remove('specs-item__active'))
+  if (specsItemEle)
+    specsItemEle.classList.add('specs-item__active')
+}
+
+/**
+ * @description 购买及加入购物车未登录校验
+ */
+const buyGoodsAndToCardValidate = () => {
+  if (!userStore.userIsLogin) {
+    userStore.setIsNeedUserLogin(true)
+    return
+  }
+  if (!currentClickSkuInfo.value) {
+    ElMessage.warning('请先选择角色')
+    return
+  }
+}
+
+/**
+ * @description 购买商品
+ */
+const buyGoods = () => {
+  buyGoodsAndToCardValidate()
+  router.push({ name: 'order-confirm' })
+}
+
+/**
+ * @description 加入购物车
+ */
+const addToCard = async () => {
+  buyGoodsAndToCardValidate()
+
+  const playload: AddGoodsToCardPayload = {
+    goods_id: '',
+    sku_id: 0,
+    nums: goodsNum.value,
+    shop_code: shopStore.shopCode,
+    old_sku_id: null,
+  }
+  const result = await postGoodsToShopCard(playload)
+
+  if (result.retcode !== 0) {
+    ElMessage.error(result.message)
+    return
+  }
 }
 
 onMounted(async () => {
@@ -183,10 +247,11 @@ onMounted(async () => {
             </div>
           </div>
         </div>
+
         <!-- sku 选择 -->
         <div class="sku">
           <h2>
-            <span class="tag" :class="[goodsTag]" />
+            <span v-if="goodsTag" class="tag" :class="[goodsTag]" />
             {{ goodsDetail.goods.detail.name }}
           </h2>
 
@@ -231,37 +296,50 @@ onMounted(async () => {
             </div>
           </div>
 
-          <div v-for="item in goodsDetail.goods.detail.sale_attrs" :key="item.name" class="specs">
-            <label class="label">{{ item.name }}</label>
-            <div class="specs-list">
-              <label
-                v-for="specs in item.content"
-                :key="specs.key"
-                class="specs-item"
-                :class="!goodsDetail.goods.quantity.sku_quantities[specs.key] ? 'specs-item__disable' : ''"
-                @click="skuCheckHandle(specs)"
-              >
-                {{ specs.text }}
-              </label>
+          <template v-if="goodsDetail.goods.detail.sale_attrs.length">
+            <div v-for="item in goodsDetail.goods.detail.sale_attrs" :key="item.key" class="specs">
+              <label class="label">{{ item.name }}</label>
+              <div v-if="item.content.length" class="specs-list">
+                <label
+                  v-for="(specs, index) in item.content"
+                  :key="index"
+                  class="specs-item"
+                  :class="[
+                    !goodsDetail.goods.quantity.sku_quantities[specs.key] ? 'specs-item__disable' : '',
+                    specs.key,
+                  ]"
+                  @click="skuCheckHandle(specs)"
+                >
+                  {{ specs.text }}
+                </label>
+              </div>
             </div>
-          </div>
+          </template>
 
           <div class="counter">
             <label class="label">数量</label>
-            <ElInputNumber size="default" />
+            <ElInputNumber
+              v-model="goodsNum"
+              size="default"
+              :min="1"
+            />
             <template v-if="currentClickSkuInfo?.key">
               <span class="stock">库存 {{ goodsDetail.goods.quantity.sku_quantities[currentClickSkuInfo.key] }} 件</span>
             </template>
             <template v-else>
               <span class="stock">库存 {{ stockTotal }} 件</span>
             </template>
+
+            <Transition name="el-fade-in-linear">
+              <span v-show="isShowBuyMaxGoods" class="max-buy-goods">单笔最多购买50件同一商品～</span>
+            </Transition>
           </div>
 
           <div class="btns">
-            <ElButton type="primary">
+            <ElButton type="primary" @click="buyGoods">
               立即购买
             </ElButton>
-            <ElButton type="primary" plain>
+            <ElButton type="primary" plain @click="addToCard">
               加入购物车
             </ElButton>
           </div>
@@ -443,6 +521,25 @@ onMounted(async () => {
               color: var(--el-color-info-light-7);
               cursor: no-drop;
             }
+            &.specs-item__active {
+              position: relative;
+              border: 1PX solid var(--el-color-primary);
+              transition: all ease .3s;
+              &::before {
+                content: "^";
+                position: absolute;
+                bottom: 0;
+                right: 0;
+                width: 10PX;
+                height: 10PX;
+                line-height: 14PX;
+                color: var(--el-color-white);
+                background-color: var(--el-color-primary);
+                border-top-right-radius: 40%;
+                border-bottom-right-radius: 40%;
+                transform: rotate(-180deg);
+              }
+            }
           }
         }
       }
@@ -466,6 +563,14 @@ onMounted(async () => {
         .stock {
           padding-left: 10PX;
           color: var(--el-color-info);
+        }
+        .max-buy-goods {
+          display: inline-block;
+          margin-left: 10PX;
+          padding: 4PX 10PX;
+          border-radius: 4PX;
+          color: var(--el-color-primary);
+          background-color: var(--el-color-primary-light-9);
         }
       }
 

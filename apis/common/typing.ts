@@ -285,3 +285,19 @@ export interface GoodsDetailCouponReceive extends CommonResult {
     instance_id: string
   }
 }
+
+export interface AddGoodsToCardPayload {
+  goods_id: string
+  sku_id: number
+  nums: number
+  shop_code: string
+  old_sku_id: number | null
+}
+
+export interface AddGoodsToCardResult extends CommonResult {
+  data: {
+    can_add_num: number
+    code: number
+    current_num: number
+  }
+}

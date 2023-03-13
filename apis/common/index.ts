@@ -1,4 +1,6 @@
 import type {
+  AddGoodsToCardPayload,
+  AddGoodsToCardResult,
   CategoryListResult,
   GoodsDetail,
   GoodsDetailCouponReceive,
@@ -100,6 +102,17 @@ export function getUserShopCardNum() {
   }>({
     method: 'GET',
     url: 'common/homeishop/v1/shop_car/get_shop_car_goods_num',
+  })
+}
+
+/**
+ * @description 加入购物车
+ */
+export function postGoodsToShopCard(data: AddGoodsToCardPayload) {
+  return http.request<AddGoodsToCardResult>({
+    method: 'POST',
+    url: 'common/homeishop/v1/shop_car/add_goods_to_shop_car',
+    data,
   })
 }
 
