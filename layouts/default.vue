@@ -3,6 +3,7 @@ import type { ShopList, ShopListItem } from '~/apis/common/typing'
 
 import { useUserStore } from '~/store/modules/user'
 import { useShopStore } from '~/store/modules/shop'
+import { useGoodsCardStore } from '~/store/modules/goodsCard'
 import { getShopList, getUserInfo, getUserShopCardNum } from '~/apis/common'
 import { shopPages } from '~/settings'
 
@@ -10,6 +11,7 @@ const route = useRoute()
 const router = useRouter()
 const userStore = useUserStore()
 const shopStore = useShopStore()
+const goodsCardStore = useGoodsCardStore()
 
 const shopList = ref<ShopList['data']['list']>([])
 const menuSelectedItem = ref<ShopListItem | undefined>(undefined)
@@ -99,25 +101,11 @@ const userAvatarDropdownCommand = (command: string) => {
   }
 }
 
-const shopCardNum = ref(0)
-/**
- * @description 获取登录后用户购物车商品数量
- */
-const queryUserShopCardNum = async () => {
-  const result = await getUserShopCardNum()
-
-  if (result.retcode !== 0) {
-    ElMessage.error(result.message)
-    return
-  }
-  shopCardNum.value = result.data.num
-}
-
 ;(async () => {
   await queryUserInfo()
   await queryShopList()
   if (userStore.userIsLogin)
-    await queryUserShopCardNum()
+    goodsCardStore.queryGoodsCard()
 })()
 
 /**
@@ -200,7 +188,9 @@ const menuSelectHandler = (key: string) => {
           <div class="goods-card" @click="goToPage('shop-card')">
             <i class="iconfont icon-shop-cart-" />
             <span>购物车</span>
-            <span v-if="userStore.userIsLogin && shopCardNum" class="red-dot">{{ shopCardNum }}</span>
+            <span
+              v-if="userStore.userIsLogin && goodsCardStore.getGoodsCardCounter" class="red-dot"
+            >{{ goodsCardStore.getGoodsCardCounter }}</span>
           </div>
         </div>
       </header>

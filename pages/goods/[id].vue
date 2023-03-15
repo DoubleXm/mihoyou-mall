@@ -3,12 +3,14 @@ import type { AddGoodsToCardPayload, GoodsDetail, GoodsDetailCouponResult, Goods
 
 import { useShopStore } from '~/store/modules/shop'
 import { useUserStore } from '~/store/modules/user'
-import { getGoodsDetail, getGoodsDetialCoupons, postGoodsDetailCouponRective, postGoodsToShopCard } from '~/apis/common'
+import { useGoodsCardStore } from '~/store/modules/goodsCard'
+import { getGoodsDetail, getGoodsDetialCoupons, postGoodsDetailCouponRective } from '~/apis/common'
 
 const route = useRoute()
 const router = useRouter()
 const shopStore = useShopStore()
 const userStore = useUserStore()
+const goodsCardStore = useGoodsCardStore()
 
 const goodsId = route.params.id as string
 
@@ -71,11 +73,6 @@ const stockTotal = computed(() => {
 
     return skus.reduce((pre, next) => pre + next)
   }
-})
-
-// 最大购买商品数量
-const isShowBuyMaxGoods = computed(() => {
-  return !!(goodsNum.value > 50)
 })
 
 /**
@@ -174,34 +171,34 @@ const buyGoodsAndToCardValidate = () => {
     ElMessage.warning('请先选择角色')
     return
   }
+  return true
 }
 
 /**
  * @description 购买商品
  */
 const buyGoods = () => {
-  buyGoodsAndToCardValidate()
-  router.push({ name: 'order-confirm' })
+  if (buyGoodsAndToCardValidate())
+    router.push({ name: 'order-confirm' })
 }
 
 /**
  * @description 加入购物车
  */
+const addToCardLoading = ref(false)
 const addToCard = async () => {
-  buyGoodsAndToCardValidate()
+  if (buyGoodsAndToCardValidate()) {
+    addToCardLoading.value = true
 
-  const playload: AddGoodsToCardPayload = {
-    goods_id: '',
-    sku_id: 0,
-    nums: goodsNum.value,
-    shop_code: shopStore.shopCode,
-    old_sku_id: null,
-  }
-  const result = await postGoodsToShopCard(playload)
-
-  if (result.retcode !== 0) {
-    ElMessage.error(result.message)
-    return
+    const playload: AddGoodsToCardPayload = {
+      goods_id: goodsDetail.value!.goods.detail.goods_id,
+      sku_id: goodsDetail.value!.goods.detail.skus[currentClickSkuInfo.value!.key].id,
+      nums: goodsNum.value,
+      shop_code: shopStore.shopCode,
+      old_sku_id: null,
+    }
+    await goodsCardStore.addToGoodsCard(playload)
+    addToCardLoading.value = false
   }
 }
 
@@ -331,7 +328,7 @@ onMounted(async () => {
             </template>
 
             <Transition name="el-fade-in-linear">
-              <span v-show="isShowBuyMaxGoods" class="max-buy-goods">单笔最多购买50件同一商品～</span>
+              <span v-show="goodsNum > 50" class="max-buy-goods">单笔最多购买50件同一商品～</span>
             </Transition>
           </div>
 
@@ -340,6 +337,12 @@ onMounted(async () => {
               立即购买
             </ElButton>
             <ElButton type="primary" plain @click="addToCard">
+              <img
+                v-if="addToCardLoading"
+                style="width: 40PX; height: 40PX;"
+                src="~/assets/images/go-to-card.gif"
+                alt="goods-card"
+              >
               加入购物车
             </ElButton>
           </div>
