@@ -13,6 +13,11 @@
     "import/no-mutable-exports": "off",
     "no-new": "off",
     "@typescript-eslint/consistent-type-imports": "off",
-    "vue/no-multiple-template-root": "off"
+    "vue/no-multiple-template-root": "off",
+    "vue/singleline-html-element-content-newline": ["error", {
+      "ignoreWhenNoAttributes": true,
+      "ignoreWhenEmpty": true,
+      "ignores": ["pre", "textarea", "div"]
+    }]
   }
 }

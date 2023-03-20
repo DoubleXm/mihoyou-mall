@@ -185,7 +185,10 @@ const menuSelectHandler = (key: string) => {
             </ElDropdown>
           </ClientOnly>
 
-          <div class="goods-card" @click="goToPage('shop-card')">
+          <div
+            class="goods-card"
+            @click="$router.push({ name: 'shop-cart', params: { shop: shopStore.shopCode } })"
+          >
             <i class="iconfont icon-shop-cart-" />
             <span>购物车</span>
             <span
