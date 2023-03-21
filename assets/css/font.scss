@@ -2,10 +2,10 @@
 @font-face {
   font-family: iconfont;  /* Project id 3812857 */
   src:
-    url("//at.alicdn.com/t/c/font_3812857_af4lticy3mj.woff2?t=1677510154540") format("woff2"),
-    url("//at.alicdn.com/t/c/font_3812857_af4lticy3mj.woff?t=1677510154540") format("woff"),
-    url("//at.alicdn.com/t/c/font_3812857_af4lticy3mj.ttf?t=1677510154540") format("truetype"),
-    url("//at.alicdn.com/t/c/font_3812857_af4lticy3mj.svg?t=1677510154540#iconfont") format("svg");
+    url("//at.alicdn.com/t/c/font_3812857_vdk7v36geq9.woff2?t=1679412158883") format("woff2"),
+    url("//at.alicdn.com/t/c/font_3812857_vdk7v36geq9.woff?t=1679412158883") format("woff"),
+    url("//at.alicdn.com/t/c/font_3812857_vdk7v36geq9.ttf?t=1679412158883") format("truetype"),
+    url("//at.alicdn.com/t/c/font_3812857_vdk7v36geq9.svg?t=1679412158883#iconfont") format("svg");
 }
 
 .iconfont {
@@ -47,4 +47,8 @@
 
 .icon-arrow-down-filling::before {
   content: "\e688";
+}
+
+.icon-dianpu::before {
+  content: "\e767";
 }

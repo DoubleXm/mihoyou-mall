@@ -1,4 +1,8 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { useShopStore } from '~/store/modules/shop'
+
+const shopStore = useShopStore()
+</script>
 
 <template>
   <div class="shop-cart__page">
@@ -12,6 +16,16 @@
     </section>
 
     <section class="shop-cart__main">
+      <div class="goods-row__item cart-flex">
+        <div class="cart-flex__item goods_checkbox">
+          <ElCheckbox />
+        </div>
+        <div class="cart-flex__item shop-cart__title">
+          <i class="iconfont icon-dianpu" />
+          <NuxtLink :to="{ name: 'shop', params: { shop: shopStore.shopCode } }">原神万有铺子</NuxtLink>
+        </div>
+      </div>
+
       <div v-for="item in 5" :key="item" class="goods-row__item cart-flex">
         <div class="cart-flex__item goods_checkbox">
           <ElCheckbox />
@@ -48,6 +62,22 @@
         </div>
       </div>
     </section>
+
+    <section class="shop-cart__footer">
+      <div class="footer-l goods_checkbox">
+        <ElCheckbox />
+        <span>全选</span>
+      </div>
+      <div class="footer-r">
+        <div class="goods-count">共 <span class="light">0</span> 件</div>
+        <div class="goods-price-count">
+          合计（不含运费）：
+          <span class="light price-prefix">￥</span>
+          <span class="light price">0:00</span>
+        </div>
+        <ElButton type="primary" size="large">结算</ElButton>
+      </div>
+    </section>
   </div>
 </template>
 
@@ -81,13 +111,6 @@
         width: calc(100% - 164PX - 60PX);
         margin-left: 164PX;
         background-color: var(--el-color-info-light-7);
-      }
-    }
-    .goods_checkbox {
-      text-align: left !important;
-      .el-checkbox__inner {
-        width: 20PX;
-        height: 20PX;
       }
     }
     .goods_desc {
@@ -140,6 +163,86 @@
         color: var(--el-color-primary);
       }
     }
+    .shop-cart__title {
+      .iconfont {
+        font-size: 18PX;
+        color: var(--el-color-primary);
+      }
+      line-height: 24PX;
+      font-size: 16PX;
+      a {
+        padding-left: 12PX;
+        color: var(--el-color-black);
+        text-decoration: none;
+        &:hover {
+          color: var(--el-color-primary);
+        }
+      }
+    }
+  }
+
+  .goods_checkbox {
+    text-align: left !important;
+    .el-checkbox__inner {
+      width: 20PX;
+      height: 20PX;
+      &::after {
+        left: 7PX;
+        top: 4PX;
+      }
+    }
+  }
+
+  .shop-cart__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    bottom: 0;
+    z-index: 2;
+    height: 100PX;
+    margin: 10PX 0 30PX 0;
+    padding: 20PX 30PX;
+    background-color: var(--el-color-white);
+    border-radius: 8PX;
+    border: 1PX solid var(--el-color-info-light-9);
+    box-sizing: border-box;
+    .footer-l {
+      display: flex;
+      align-items: center;
+      flex: 1;
+      font-size: 16PX;
+      > span {
+        padding-left: 10PX;
+      }
+    }
+    .footer-r {
+      display: flex;
+      align-items: center;
+      flex: 1;
+      font-size: 16PX;
+      line-height: 16PX;
+      .goods-count {
+        margin: 14PX 30PX 0 0;
+      }
+      .goods-price-count {
+        height: 16PX;
+      }
+      .price-prefix {
+        font-size: 24PX;
+      }
+      .price {
+        font-size: 34PX;
+      }
+      .el-button {
+        width: 180PX;
+        height: 56PX;
+        margin-left: 30PX;
+        border-radius: 8PX;
+        font-size: 18PX;
+        font-weight: bold;
+      }
+    }
   }
 
   .cart-flex {
@@ -157,6 +260,10 @@
         text-align: left;
       }
     }
+  }
+
+  .light {
+    color: var(--el-color-primary);
   }
 }
 
