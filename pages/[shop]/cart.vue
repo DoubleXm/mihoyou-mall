@@ -1,7 +1,230 @@
 <script setup lang="ts">
-import { useShopStore } from '~/store/modules/shop'
+import type { CheckboxValueType } from 'element-plus'
+import type {
+  CalcShopCarGoodsPayload, CalcShopCarGoodsResult, DelShopCarGoodsPayload, EditShopCarGoodsPayload,
+  GoodsCartChildItem, GoodsCartItem, GoodsCartResult,
+} from '~/apis/common/typing'
 
-const shopStore = useShopStore()
+import { useGoodsCardStore } from '~/store/modules/goodsCard'
+import { calcShopCarGoods, delShopCarGoods, editShopCarGoods, getGoodsCartList } from '~/apis/common'
+
+const router = useRouter()
+const goodsStore = useGoodsCardStore()
+
+const selectGoodsCarAll = ref(false)
+const goodsCartList = ref<GoodsCartResult['data']['list']>([])
+const goodsPriceCounterInfo = ref<CalcShopCarGoodsResult['data'] | null>(null)
+const goodsCounter = ref(0)
+
+watch(
+  () => goodsCartList.value,
+  (val) => {
+    // 全部子集如果全部为 true 则更新全选效果
+    const isShopSelect = val.every(i => i.select)
+    const isGoodsSelect = val.map(i => i.list.map(k => k.select).every(j => j)).every(l => l)
+
+    if (isShopSelect && isGoodsSelect)
+      selectGoodsCarAll.value = true
+
+    goodsCounter.value = 0
+    val.forEach((item) => {
+      if (item.list.length) {
+        // 店铺内子集全选
+        const isInShopSelectAll = item.list.every(item => item.select)
+        item.select = isInShopSelectAll
+
+        // 统计全部为 true （选中商品）的数量
+        item.list.forEach((i) => {
+          if (i.select)
+            goodsCounter.value += i.nums
+        })
+      }
+    })
+  },
+  { deep: true },
+)
+
+/**
+ * @description 格式化 goodsCartList (增加 select 属性用于绑定 checkbox)
+ */
+const formatGoodsCaritList = (goodsCartList: GoodsCartResult['data']['list']) => {
+  goodsCartList.forEach((item) => {
+    item.select = false
+    if (item.list.length)
+      item.list.forEach(i => i.select = false)
+  })
+  return goodsCartList
+}
+
+/**
+ * @description 格式化计算价格请求参数
+ */
+const formatCalcGoodsCartPayload = (goodsCartList: GoodsCartResult['data']['list']) => {
+  // 计算金额所需的 payload
+  return {
+    list: goodsCartList
+      .map(item => ({
+        shop_code: item.shop_code,
+        goods_list: item.list.filter(i => i.select),
+      }))
+      .filter(item => item.goods_list.length)
+      .map(item => ({
+        shop_code: item.shop_code,
+        goods_list: item.goods_list.map(i => ({
+          goods_id: i.goods_id,
+          sku_id: i.sku_id,
+          nums: i.nums,
+        })),
+      })),
+  }
+}
+
+/**
+ * @description 购物车商品列表
+ */
+const queryGoodsCartList = async () => {
+  const result = await getGoodsCartList()
+
+  if (result.retcode !== 0) {
+    ElMessage.error(result.message)
+    return
+  }
+
+  goodsCartList.value = formatGoodsCaritList(result.data.list)
+}
+
+/**
+ * @description 计算购物车金额
+ */
+const calcGoodsCartPrice = async (data: CalcShopCarGoodsPayload) => {
+  const result = await calcShopCarGoods(data)
+
+  if (result.retcode !== 0) {
+    ElMessage.error(result.message)
+    return
+  }
+  goodsPriceCounterInfo.value = result.data
+  console.log(goodsPriceCounterInfo.value)
+}
+
+/**
+ * @description 修改购物车商品数量
+ */
+const updateGoodsCartById = async (goods: GoodsCartChildItem) => {
+  const payload: EditShopCarGoodsPayload = {
+    sku_id: goods.sku_id,
+    shop_code: goods.shop_code,
+    nums: goods.nums,
+    goods_id: goods.goods_id,
+  }
+
+  const result = await editShopCarGoods(payload)
+
+  if (result.retcode !== 0) {
+    ElMessage.error(result.message)
+    return
+  }
+
+  if (goods.select || goodsCounter.value)
+    calcGoodsCartPrice(formatCalcGoodsCartPayload(goodsCartList.value))
+}
+
+/**
+ * @description 删除单个购物车商品 todo
+ */
+const deleteGoodsCartById = (goods: GoodsCartChildItem, item: GoodsCartItem) => {
+  ElMessageBox.confirm(
+    '是否将此商品从购物车删除',
+    '提示',
+    {
+      confirmButtonText: '确认',
+      cancelButtonText: '取消',
+    },
+  )
+    .then(async () => {
+      const payload: DelShopCarGoodsPayload = {
+        sku_id: goods.sku_id,
+        shop_code: goods.shop_code,
+        goods_id: goods.goods_id,
+      }
+
+      const result = await delShopCarGoods(payload)
+
+      if (result.retcode !== 0) {
+        ElMessage.error(result.message)
+        return
+      }
+
+      // 取消选中也要不影响其他的选中效果
+      goodsCartList.value.forEach((i) => {
+        if (i.shop_code === item.shop_code) {
+          const index = i.list.findIndex(j => j.goods_id === goods.goods_id)
+          if (index !== -1)
+            i.list.splice(index, 1)
+
+          if (!i.list.length) {
+            const index = goodsCartList.value.findIndex(k => k.shop_code === i.shop_code)
+            if (index !== -1)
+              goodsCartList.value.splice(index, 1)
+          }
+        }
+      })
+      goodsStore.queryGoodsCard()
+
+      if (goods.select || goodsCounter.value)
+        calcGoodsCartPrice(formatCalcGoodsCartPayload(goodsCartList.value))
+    })
+}
+
+/**
+ * @description 选择购物车所有商品
+ */
+const selectGoodsInCart = (event: CheckboxValueType) => {
+  goodsCartList.value.forEach((i) => {
+    i.select = event as boolean
+    i.list.forEach(item => item.select = event as boolean)
+  })
+
+  calcGoodsCartPrice(formatCalcGoodsCartPayload(goodsCartList.value))
+}
+
+/**
+ * @description 选择店铺内所有的商品
+ */
+const selectGoodsInShop = (event: CheckboxValueType, cartItem: GoodsCartItem) => {
+  // 只要子集有 false 全选状态就不会满足
+  if (!event)
+    selectGoodsCarAll.value = false
+
+  goodsCartList.value.forEach((item) => {
+    if (item.shop_code === cartItem.shop_code)
+      item.list.forEach(i => i.select = event as boolean)
+  })
+
+  calcGoodsCartPrice(formatCalcGoodsCartPayload(goodsCartList.value))
+}
+
+/**
+ * @description 选择单个商品
+ */
+const selectGoodsSingle = (event: CheckboxValueType, goods: GoodsCartChildItem) => {
+  // 只要子集有 false 全选状态就不会满足
+  if (!event)
+    selectGoodsCarAll.value = false
+
+  calcGoodsCartPrice(formatCalcGoodsCartPayload(goodsCartList.value))
+}
+
+/**
+ * @description 结算
+ */
+const settleAccounts = () => {
+  router.push({ name: 'order-confirm', query: { from: 'cart' } })
+}
+
+onMounted(() => {
+  queryGoodsCartList()
+})
 </script>
 
 <template>
@@ -15,69 +238,87 @@ const shopStore = useShopStore()
       <div class="cart-flex__item">操作</div>
     </section>
 
-    <section class="shop-cart__main">
-      <div class="goods-row__item cart-flex">
-        <div class="cart-flex__item goods_checkbox">
-          <ElCheckbox />
-        </div>
-        <div class="cart-flex__item shop-cart__title">
-          <i class="iconfont icon-dianpu" />
-          <NuxtLink :to="{ name: 'shop', params: { shop: shopStore.shopCode } }">原神万有铺子</NuxtLink>
-        </div>
-      </div>
-
-      <div v-for="item in 5" :key="item" class="goods-row__item cart-flex">
-        <div class="cart-flex__item goods_checkbox">
-          <ElCheckbox />
-        </div>
-        <div class="cart-flex__item goods_desc">
-          <ClientOnly>
-            <ElPopover placement="right" :width="240" trigger="hover" popper-class="goods-image__popover">
-              <template #reference>
-                <ElImage fit="cover" />
-              </template>
-
-              <ElImage fit="cover" class="goods-hover__image " />
-            </ElPopover>
-          </ClientOnly>
-
-          <div class="goods_desc-content">
-            <NuxtLink>
-              <h3>【原神】蒙德城主题系列 人物亚克力立牌 Genshin</h3>
-            </NuxtLink>
-            <span>迪奥娜</span>
+    <template v-if="goodsCartList.length">
+      <section v-for="item in goodsCartList" :key="item.shop_name" class="shop-cart__main">
+        <!-- 店铺名 -->
+        <div class="goods-row__item cart-flex">
+          <div class="cart-flex__item goods_checkbox">
+            <ElCheckbox v-model="item.select" @change="selectGoodsInShop($event, item)" />
+          </div>
+          <div class="cart-flex__item shop-cart__title">
+            <i class="iconfont icon-dianpu" />
+            <NuxtLink :to="{ name: 'shop', params: { shop: item.shop_code } }">{{ item.shop_name }}</NuxtLink>
           </div>
         </div>
-        <div class="cart-flex__item">
-          ￥49.90
-        </div>
-        <div class="cart-flex__item goods_number">
-          <ElInputNumber size="small" />
-        </div>
-        <div class="cart-flex__item goods_price ">
-          ￥100.00
-        </div>
-        <div class="cart-flex__item goods_action">
-          <i class="iconfont icon-shanchu" />
-        </div>
-      </div>
-    </section>
 
-    <section class="shop-cart__footer">
-      <div class="footer-l goods_checkbox">
-        <ElCheckbox />
-        <span>全选</span>
-      </div>
-      <div class="footer-r">
-        <div class="goods-count">共 <span class="light">0</span> 件</div>
-        <div class="goods-price-count">
-          合计（不含运费）：
-          <span class="light price-prefix">￥</span>
-          <span class="light price">0:00</span>
+        <!-- 购物车商品列表 -->
+        <div v-for="goods in item.list" :key="goods.goods_id" class="goods-row__item cart-flex">
+          <div class="cart-flex__item goods_checkbox">
+            <ElCheckbox v-model="goods.select" @change="selectGoodsSingle($event, goods)" />
+          </div>
+          <div class="cart-flex__item goods_desc">
+            <ClientOnly>
+              <ElPopover placement="right" :width="240" trigger="hover" popper-class="goods-image__popover">
+                <template #reference>
+                  <ElImage fit="cover" :src="goods.cover_url" />
+                </template>
+
+                <ElImage fit="cover" :src="goods.cover_url" class="goods-hover__image " />
+              </ElPopover>
+            </ClientOnly>
+
+            <div class="goods_desc-content">
+              <NuxtLink :to="{ name: 'goods-id', params: { id: goods.goods_id } }">
+                <h3>{{ goods.goods_name }}</h3>
+              </NuxtLink>
+              <span>{{ goods.sale_attr_val }}</span>
+            </div>
+          </div>
+          <div class="cart-flex__item">
+            ￥{{ (goods.new_price_fee / 100).toFixed(2) }}
+          </div>
+          <div class="cart-flex__item goods_number">
+            <ElInputNumber
+              v-model="goods.nums"
+              :min="1"
+              size="small"
+              @input="updateGoodsCartById(goods)"
+            />
+          </div>
+          <div class="cart-flex__item goods_price ">
+            ￥{{ (goods.new_price_fee / 100 * goods.nums).toFixed(2) }}
+          </div>
+          <div class="cart-flex__item goods_action">
+            <i class="iconfont icon-shanchu" @click="deleteGoodsCartById(goods, item)" />
+          </div>
         </div>
-        <ElButton type="primary" size="large">结算</ElButton>
-      </div>
-    </section>
+      </section>
+
+      <!-- 结算相关 -->
+      <section class="shop-cart__footer">
+        <div class="footer-l goods_checkbox">
+          <ElCheckbox v-model="selectGoodsCarAll" @change="selectGoodsInCart" />
+          <span>全选</span>
+        </div>
+        <div class="footer-r">
+          <div class="goods-count">共 <span class="light">{{ goodsCounter }}</span> 件</div>
+          <div class="goods-price-count">
+            合计（不含运费）：
+            <span class="light price-prefix">￥</span>
+            <template v-if="goodsPriceCounterInfo">
+              <span v-if="goodsPriceCounterInfo.total_goods_price" class="light price">
+                {{ goodsPriceCounterInfo!.total_goods_price / 100 }}
+              </span>
+              <span v-else class="light price">0.00</span>
+            </template>
+            <span v-else class="light price">0.00</span>
+          </div>
+          <ElButton type="primary" size="large" :disabled="!goodsCounter" @click="settleAccounts">结算</ElButton>
+        </div>
+      </section>
+    </template>
+
+    <GoodsLoading v-else />
   </div>
 </template>
 
@@ -99,6 +340,11 @@ const shopStore = useShopStore()
       position: relative;
       padding: 12PX 30PX;
       &:last-child {
+        &::after {
+          height: 0;
+        }
+      }
+      &:first-child {
         &::after {
           height: 0;
         }
@@ -127,6 +373,10 @@ const shopStore = useShopStore()
         display: flex;
         flex-direction: column;
         justify-content: space-between;
+        a {
+          text-decoration: none;
+          color: var(--el-color-black);
+        }
         h3 {
           width: 350PX;
           font-size: 16PX;

@@ -1,7 +1,13 @@
+import type { CommonResult } from '../typing'
 import type {
   AddGoodsToCardPayload,
   AddGoodsToCardResult,
+  CalcShopCarGoodsPayload,
+  CalcShopCarGoodsResult,
   CategoryListResult,
+  DelShopCarGoodsPayload,
+  EditShopCarGoodsPayload,
+  GoodsCartResult,
   GoodsDetail,
   GoodsDetailCouponReceive,
   GoodsDetailCouponResult,
@@ -152,5 +158,48 @@ export function postGoodsDetailCouponRective(coupon_id: string) {
     data: {
       coupon_id,
     },
+  })
+}
+
+/**
+ * @description 获取购物车商品列表
+ */
+export function getGoodsCartList() {
+  return http.request<GoodsCartResult>({
+    method: 'GET',
+    url: '/common/homeishop/v2/shop_car/get_shop_car_list',
+  })
+}
+
+/**
+ * @description 编辑购物车商品
+ */
+export function editShopCarGoods(data: EditShopCarGoodsPayload) {
+  return http.request<CommonResult>({
+    method: 'POST',
+    url: '/common/homeishop/v1/shop_car/edit_shop_car_goods',
+    data,
+  })
+}
+
+/**
+ * @description 删除购物车商品
+ */
+export function delShopCarGoods(data: DelShopCarGoodsPayload) {
+  return http.request<CommonResult>({
+    method: 'POST',
+    url: '/common/homeishop/v1/shop_car/del_shop_car_goods',
+    data,
+  })
+}
+
+/**
+ * @description 计算购物商品金额
+ */
+export function calcShopCarGoods(data: CalcShopCarGoodsPayload) {
+  return http.request<CalcShopCarGoodsResult>({
+    method: 'POST',
+    url: '/common/homeishop/v1/shop_car/calc_price',
+    data,
   })
 }

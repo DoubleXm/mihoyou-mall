@@ -301,3 +301,76 @@ export interface AddGoodsToCardResult extends CommonResult {
     current_num: number
   }
 }
+
+export interface GoodsCartItem {
+  gift_activity_goods: any[]
+  have_avaliable_shop_coupon: boolean
+  last_update_time: number
+  shop_code: string
+  shop_name: string
+  list: GoodsCartChildItem[]
+
+  select: boolean // 自定义属性控制 checkbox
+}
+
+export interface GoodsCartChildItem {
+  cover_url: string
+  create_time: string
+  from_system: boolean
+  goods_id: string
+  goods_name: string
+  is_effect: boolean
+  mtime: number
+  new_price_fee: number
+  noneffecttive_reason: string
+  nums: number
+  old_price_fee: number
+  presale: null
+  quantity: number
+  quota: number
+  remaining_time: number
+  sale_attr_val: string
+  sale_time: number
+  shop_code: string
+  sku_id: number
+  sold_out_status: number
+
+  select: boolean // 自定义属性控制 checkbox
+}
+
+export interface GoodsCartResult extends CommonResult {
+  data: {
+    list: GoodsCartItem[]
+  }
+}
+
+export interface EditShopCarGoodsPayload {
+  goods_id: string
+  nums: number
+  shop_code: string
+  sku_id: number
+}
+
+export type DelShopCarGoodsPayload = Omit<EditShopCarGoodsPayload, 'nums'>
+
+export interface CalcShopCarGoodsPayload {
+  list: {
+    shop_code: string
+    goods_list: {
+      goods_id: string
+      nums: number
+      sku_id: number
+    }[]
+  }[]
+}
+
+export interface CalcShopCarGoodsResult extends CommonResult {
+  data: {
+    coupon_shop_discount: number
+    goods_discount: number
+    total_discount: number
+    total_goods_price: number
+    total_price: number
+    list: CalcShopCarGoodsPayload['list']
+  }
+}

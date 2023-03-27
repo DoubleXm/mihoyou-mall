@@ -4,7 +4,7 @@ import type { ShopList, ShopListItem } from '~/apis/common/typing'
 import { useUserStore } from '~/store/modules/user'
 import { useShopStore } from '~/store/modules/shop'
 import { useGoodsCardStore } from '~/store/modules/goodsCard'
-import { getShopList, getUserInfo, getUserShopCardNum } from '~/apis/common'
+import { getShopList, getUserInfo } from '~/apis/common'
 import { shopPages } from '~/settings'
 
 const route = useRoute()
