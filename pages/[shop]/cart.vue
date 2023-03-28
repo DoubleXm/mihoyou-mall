@@ -331,18 +331,15 @@ onMounted(() => {
         <p>您的购物车空空如也～</p>
       </div>
 
-      <CartGoodsList v-if="goodsCartList.length && !goodsCartLoading" />
+      <CartGoodsList v-if="!goodsCartList.length && !goodsCartLoading" />
     </template>
   </div>
 </template>
 
 <style lang="scss">
-.page-container {
-  min-height: auto !important;
-}
 .shop-cart__page {
   width: 1260PX;
-  margin: 20PX auto 0 auto;
+  margin: 20PX auto 30PX auto;
   .shop-cart__header {
     margin-bottom: 8PX;
     padding: 20PX 30PX;
@@ -540,7 +537,7 @@ onMounted(() => {
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    height: 500PX;
+    height: 300PX;
     p {
       margin-top: 10PX;
       line-height: 24PX;
