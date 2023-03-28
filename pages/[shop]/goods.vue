@@ -262,26 +262,6 @@ function goToGoodsDetail(goods: SpuGoodsListItem) {
       }
     }
 
-    .el-breadcrumb {
-      padding: 12PX 30PX;
-      .el-breadcrumb__item {
-        .el-breadcrumb__inner {
-          line-height: 20PX;
-          &:hover {
-            color: var(--el-color-primary);
-            cursor: pointer;
-          }
-          font-weight: normal;
-          color: var(--el-text-color-regular);
-        }
-      }
-      .current-breadcrumb {
-        .el-breadcrumb__inner {
-          color: var(--el-color-primary);
-        }
-      }
-    }
-
     .filter-tab {
       display: flex;
       align-items: center;

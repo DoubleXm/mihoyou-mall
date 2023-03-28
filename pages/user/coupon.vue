@@ -1,5 +1,5 @@
 <script setup lang="ts"></script>
 
 <template>
-  <div>user-order</div>
+  <div>user-coupon</div>
 </template>

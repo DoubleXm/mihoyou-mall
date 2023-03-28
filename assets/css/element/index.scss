@@ -77,3 +77,27 @@ div[id*="el-popper-container"] {
     }
   }
 }
+
+// 通用面包屑样式
+.el-breadcrumb {
+  padding: 12PX 30PX;
+
+  .el-breadcrumb__item {
+    .el-breadcrumb__inner {
+      font-weight: normal;
+      line-height: 20PX;
+      color: var(--el-text-color-regular);
+
+      &:hover {
+        color: var(--el-color-primary);
+        cursor: pointer;
+      }
+    }
+  }
+
+  .current-breadcrumb {
+    .el-breadcrumb__inner {
+      color: var(--el-color-primary);
+    }
+  }
+}
