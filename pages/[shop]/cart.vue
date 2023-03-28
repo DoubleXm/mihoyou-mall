@@ -15,6 +15,7 @@ const selectGoodsCarAll = ref(false)
 const goodsCartList = ref<GoodsCartResult['data']['list']>([])
 const goodsPriceCounterInfo = ref<CalcShopCarGoodsResult['data'] | null>(null)
 const goodsCounter = ref(0)
+const goodsCartLoading = ref(false)
 
 watch(
   () => goodsCartList.value,
@@ -83,8 +84,10 @@ const formatCalcGoodsCartPayload = (goodsCartList: GoodsCartResult['data']['list
  * @description 购物车商品列表
  */
 const queryGoodsCartList = async () => {
+  goodsCartLoading.value = true
   const result = await getGoodsCartList()
 
+  goodsCartLoading.value = false
   if (result.retcode !== 0) {
     ElMessage.error(result.message)
     return
@@ -229,16 +232,16 @@ onMounted(() => {
 
 <template>
   <div class="shop-cart__page">
-    <section class="shop-cart__header cart-flex">
-      <div class="cart-flex__item" />
-      <div class="cart-flex__item">商品信息</div>
-      <div class="cart-flex__item">单价</div>
-      <div class="cart-flex__item">数量</div>
-      <div class="cart-flex__item">金额</div>
-      <div class="cart-flex__item">操作</div>
-    </section>
-
     <template v-if="goodsCartList.length">
+      <section class="shop-cart__header cart-flex">
+        <div class="cart-flex__item" />
+        <div class="cart-flex__item">商品信息</div>
+        <div class="cart-flex__item">单价</div>
+        <div class="cart-flex__item">数量</div>
+        <div class="cart-flex__item">金额</div>
+        <div class="cart-flex__item">操作</div>
+      </section>
+
       <section v-for="item in goodsCartList" :key="item.shop_name" class="shop-cart__main">
         <!-- 店铺名 -->
         <div class="goods-row__item cart-flex">
@@ -318,7 +321,18 @@ onMounted(() => {
       </section>
     </template>
 
-    <GoodsLoading v-else />
+    <template v-else>
+      <div class="goods-cart__empty">
+        <img
+          style="width: 176px; height: 160px;"
+          src="~/assets/images/goods-cart-empty.webp"
+          alt="empty-goods-cart"
+        >
+        <p>您的购物车空空如也～</p>
+      </div>
+
+      <CartGoodsList v-if="goodsCartList.length && !goodsCartLoading" />
+    </template>
   </div>
 </template>
 
@@ -514,6 +528,19 @@ onMounted(() => {
 
   .light {
     color: var(--el-color-primary);
+  }
+
+  .goods-cart__empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    height: 500PX;
+    p {
+      margin-top: 10PX;
+      line-height: 24PX;
+      color: #9696a1;
+    }
   }
 }
 
