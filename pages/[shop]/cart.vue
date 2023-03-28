@@ -337,8 +337,12 @@ onMounted(() => {
 </template>
 
 <style lang="scss">
+.page-container {
+  min-height: auto !important;
+}
 .shop-cart__page {
-  margin: 20PX 10PX 0 10PX;
+  width: 1260PX;
+  margin: 20PX auto 0 auto;
   .shop-cart__header {
     margin-bottom: 8PX;
     padding: 20PX 30PX;
@@ -482,6 +486,7 @@ onMounted(() => {
     }
     .footer-r {
       display: flex;
+      justify-content: flex-end;
       align-items: center;
       flex: 1;
       font-size: 16PX;
