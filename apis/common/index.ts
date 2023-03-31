@@ -203,3 +203,13 @@ export function calcShopCarGoods(data: CalcShopCarGoodsPayload) {
     data,
   })
 }
+
+/**
+ * @description 获取个人信息
+ */
+export function queryUserInfo() {
+  return http.request<UserInfoResult>({
+    method: 'GET',
+    url: '/common/homeishop/v1/user/info',
+  })
+}

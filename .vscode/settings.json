@@ -8,5 +8,8 @@
   
   "css.lint.unknownAtRules": "ignore",
   "scss.lint.unknownAtRules": "ignore",
-  "stylelint.validate": ["css","scss",],
+  "stylelint.validate": [
+    "css",
+    "scss",
+  ],
 }

@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { ArrowRight } from '@element-plus/icons-vue'
+import { getUserInfo } from '~/apis/common'
+import type { UserInfoResult } from '~/apis/common/typing'
 
+const userInfo = ref<UserInfoResult['data']>()
 const menuList = ref([
   { text: '我的订单', name: 'user-order', icon: 'icon-dingdan' },
   { text: '退款售后', name: 'user-service', icon: 'icon-shouhouwuyou' },
@@ -11,6 +14,18 @@ const menuList = ref([
     icon: 'icon-dizhi',
   },
 ])
+
+const queryUserInfo = async () => {
+  const result = await getUserInfo()
+
+  if (result.retcode !== 0) {
+    ElMessage.error(result.message)
+    return
+  }
+  userInfo.value = result.data
+}
+
+queryUserInfo()
 </script>
 
 <template>
@@ -21,10 +36,10 @@ const menuList = ref([
     </ElBreadcrumb>
 
     <div class="user-info-content">
-      <el-avatar :size="76" src="" />
+      <el-avatar :size="76" :src="userInfo?.avatar_url" />
       <div class="user">
-        <p class="user-name">onePeople</p>
-        <p class="user-id">AID: 357733426</p>
+        <p class="user-name">{{ userInfo?.nickname }}</p>
+        <p class="user-id">AID: {{ userInfo?.uid }}</p>
       </div>
     </div>
 
@@ -43,7 +58,7 @@ const menuList = ref([
         </ul>
       </div>
       <div class="r-content">
-        <NuxtPage name="user-order" />
+        <NuxtPage />
       </div>
     </div>
   </div>
@@ -119,7 +134,47 @@ const menuList = ref([
       flex: 1;
       min-height: 400PX;
       border-radius: 8PX;
+    }
+  }
+
+  // order 下所有的 ElTabs 样式重写 及通用样式
+  .menu-content {
+    h3.menu-content__title {
+      padding: 24PX 30PX 0;
+      font-size: 18PX;
+      line-height: 24PX;
+      font-weight: bold;
+      color: var(--el-color-black);
       background-color: var(--el-color-white);
+      border-top-right-radius: 8PX;
+      border-top-left-radius: 8PX;
+    }
+
+    .el-tabs {
+      .el-tabs__header {
+        padding: 12PX 30PX;
+        margin: 0;
+        border-bottom: 1PX solid var(--el-color-info-light-7);
+        background-color: var(--el-color-white);
+        .el-tabs__nav-wrap {
+          &::after {
+            display: none;
+          }
+          .el-tabs__active-bar {
+            display: none;
+          }
+          .el-tabs__item {
+            height: 44PX;
+            padding: 0;
+            font-size: 14PX;
+            line-height: 44PX;
+            font-weight: normal;
+            &:not(:nth-child(2)) {
+              margin-left: 42PX;
+            }
+          }
+        }
+      }
     }
   }
 }
