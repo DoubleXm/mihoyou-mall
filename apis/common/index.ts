@@ -1,4 +1,4 @@
-import type { CommonResult } from '../typing'
+import type { CommonQuery, CommonResult } from '../typing'
 import type {
   AddGoodsToCardPayload,
   AddGoodsToCardResult,
@@ -12,6 +12,7 @@ import type {
   GoodsDetailCouponReceive,
   GoodsDetailCouponResult,
   GoodsListResult,
+  OrderListResult,
   SearchHotwordResult,
   SearchSuggestionResult,
   ShopList,
@@ -211,5 +212,18 @@ export function queryUserInfo() {
   return http.request<UserInfoResult>({
     method: 'GET',
     url: '/common/homeishop/v1/user/info',
+  })
+}
+
+/**
+ * @description 获取订单列表
+ */
+export function getOrderList(filterBy: CommonQuery) {
+  return http.request<OrderListResult>({
+    method: 'GET',
+    url: '/common/homeishop/v1/order/order_list',
+    params: {
+      ...filterBy,
+    },
   })
 }

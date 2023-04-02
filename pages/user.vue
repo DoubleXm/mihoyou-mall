@@ -177,5 +177,21 @@ queryUserInfo()
       }
     }
   }
+
+  .paging {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 8PX 0 20PX 0;
+    padding: 20PX;
+    background-color: var(--el-color-white);
+    border-radius: 8PX;
+    button, li {
+      border-radius: 6PX;
+    }
+    button[aria-disabled=true] {
+      display: none;
+    }
+  }
 }
 </style>

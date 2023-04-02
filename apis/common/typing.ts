@@ -374,3 +374,91 @@ export interface CalcShopCarGoodsResult extends CommonResult {
     list: CalcShopCarGoodsPayload['list']
   }
 }
+
+export interface OrderListResult extends CommonResult {
+  data: {
+    count: number
+    list: OrderListItem[]
+  }
+}
+
+export interface OrderListItem {
+  account_uid: number
+  allow_close_order: false
+  allow_user_change_address: false
+  can_apply_refund_logistic: false
+  cancel_time: number
+  channel: string
+  comment: string
+  delivery_time: number
+  discounts: {
+    coupon_discount: number
+    goods_discount: number
+    total_discount: number
+  }
+  goods_amount: number
+  goods_list: GoodsItemForOderListItem[]
+  invoice_info: {
+    disabled_reason: string
+    status: number
+  }
+  logistic_amount: number
+  logistic_status: number
+  mtime: number
+  order_amount: number
+  order_no: string
+  order_time: number
+  pay_deadline: number
+  payment_info: {
+    pay_amount: number
+    pay_method: number
+    pay_no: string
+    pay_time: number
+  }
+  shop: {
+    shop_code: string
+    shop_icon: string
+    shop_name: string
+  }
+  status: number // 1 待付款 400 交易关闭
+  sync_status: number
+}
+
+export interface GoodsItemForOderListItem {
+  aftersales_info: {
+    aftersales_no: string
+    aftersales_status: number
+    aftersales_type: number
+    can_apply_aftersales: number
+  }
+  meta_info: {
+    activity_id: string
+    cd_keys: any[]
+    coupon_discount: number
+    cover_url: string
+    free_shipping: boolean
+    gift_type: number
+    goods_id: string
+    goods_kind: number
+    goods_name: string
+    goods_type: number
+    is_gift: boolean
+    market_price: number
+    presale_id: string
+    presale_type: number
+    price: number
+    quantity: number
+    sale_attr_val: string
+    shipping_status: number
+    sku_id: number
+    sku_sales: {
+      attr_key: string
+      attr_name: string
+      attr_value: string
+    }[]
+    total_price: number
+    version: number
+  }
+  shop: null
+}
+
